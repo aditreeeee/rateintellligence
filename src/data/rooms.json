@@ -1,0 +1,326 @@
+[
+  {
+    "id": "RM-01",
+    "propertyId": "PROP-100234",
+    "name": "Deluxe Room",
+    "description": "Spacious 32 sqm room with city views, king or twin bedding, and a marble bathroom.",
+    "status": "Active",
+    "areaValue": 320,
+    "areaUnit": "Sq. Ft.",
+    "roomTypeId": "RC-DLX",
+    "layoutId": "LO-1BR",
+    "maxAdults": 2,
+    "maxChildren": 1,
+    "maxOccupancy": 3,
+    "baseOccupancy": 2,
+    "occupancyBasedType": "Double",
+    "bedConfigurationId": "BT-001",
+    "numberOfBeds": 1,
+    "roomOptionIds": [
+      "RO-004"
+    ],
+    "amenityIds": [
+      "AM-001",
+      "AM-013",
+      "AM-014"
+    ],
+    "tagIds": [
+      "TAG-BIZ",
+      "TAG-LEIS"
+    ],
+    "notes": [],
+    "displayOrder": 1,
+    "createdBy": "Aditree Admin",
+    "createdDate": "2026-05-02",
+    "modifiedDate": "2026-07-10"
+  },
+  {
+    "id": "RM-02",
+    "propertyId": "PROP-100234",
+    "name": "Super Deluxe",
+    "description": "40 sqm premium room with a lounge nook, upgraded amenities and skyline views.",
+    "status": "Active",
+    "areaValue": 400,
+    "areaUnit": "Sq. Ft.",
+    "roomTypeId": "RC-SDLX",
+    "layoutId": "LO-1BR",
+    "maxAdults": 3,
+    "maxChildren": 1,
+    "maxOccupancy": 4,
+    "baseOccupancy": 2,
+    "occupancyBasedType": "Double",
+    "bedConfigurationId": "BT-001",
+    "numberOfBeds": 1,
+    "roomOptionIds": [
+      "RO-004",
+      "RO-002"
+    ],
+    "amenityIds": [
+      "AM-001",
+      "AM-013",
+      "AM-016",
+      "AM-014"
+    ],
+    "tagIds": [
+      "TAG-LEIS",
+      "TAG-COUP"
+    ],
+    "notes": [],
+    "displayOrder": 2,
+    "createdBy": "Aditree Admin",
+    "createdDate": "2026-05-02",
+    "modifiedDate": "2026-07-10"
+  },
+  {
+    "id": "RM-03",
+    "propertyId": "PROP-100234",
+    "name": "Executive",
+    "description": "48 sqm executive room with lounge access, workspace, and turndown service.",
+    "status": "Active",
+    "areaValue": 440,
+    "areaUnit": "Sq. Ft.",
+    "roomTypeId": "RC-EXE",
+    "layoutId": "LO-1BR",
+    "maxAdults": 2,
+    "maxChildren": 1,
+    "maxOccupancy": 3,
+    "baseOccupancy": 2,
+    "occupancyBasedType": "Twin",
+    "bedConfigurationId": "BT-002",
+    "numberOfBeds": 1,
+    "roomOptionIds": [
+      "RO-004",
+      "RO-001"
+    ],
+    "amenityIds": [
+      "AM-001",
+      "AM-013",
+      "AM-015",
+      "AM-017"
+    ],
+    "tagIds": [
+      "TAG-BIZ"
+    ],
+    "notes": [],
+    "displayOrder": 3,
+    "createdBy": "Aditree Admin",
+    "createdDate": "2026-05-02",
+    "modifiedDate": "2026-07-10"
+  },
+  {
+    "id": "RM-04",
+    "propertyId": "PROP-100234",
+    "name": "Suite",
+    "description": "65 sqm suite with separate living area, dining space and panoramic corner views.",
+    "status": "Active",
+    "areaValue": 620,
+    "areaUnit": "Sq. Ft.",
+    "roomTypeId": "RC-STE",
+    "layoutId": "LO-2BR",
+    "maxAdults": 2,
+    "maxChildren": 2,
+    "maxOccupancy": 4,
+    "baseOccupancy": 2,
+    "occupancyBasedType": "Family",
+    "bedConfigurationId": "BT-001",
+    "numberOfBeds": 2,
+    "roomOptionIds": [
+      "RO-004",
+      "RO-002"
+    ],
+    "amenityIds": [
+      "AM-001",
+      "AM-013",
+      "AM-016",
+      "AM-012",
+      "AM-011"
+    ],
+    "tagIds": [
+      "TAG-LUX",
+      "TAG-HONEY",
+      "TAG-COUP"
+    ],
+    "notes": [],
+    "displayOrder": 4,
+    "createdBy": "Aditree Admin",
+    "createdDate": "2026-05-02",
+    "modifiedDate": "2026-07-10"
+  },
+  {
+    "id": "RM-05",
+    "propertyId": "PROP-100235",
+    "name": "Sea View Suite",
+    "description": "38 sqm suite with a private balcony overlooking the Arabian Sea.",
+    "status": "Active",
+    "areaValue": 380,
+    "areaUnit": "Sq. Ft.",
+    "roomTypeId": "RC-STE",
+    "layoutId": "LO-1BR",
+    "maxAdults": 2,
+    "maxChildren": 1,
+    "maxOccupancy": 3,
+    "baseOccupancy": 2,
+    "occupancyBasedType": "Double",
+    "bedConfigurationId": "BT-002",
+    "numberOfBeds": 1,
+    "roomOptionIds": [
+      "RO-004"
+    ],
+    "amenityIds": [
+      "AM-001",
+      "AM-011",
+      "AM-013"
+    ],
+    "tagIds": [
+      "TAG-COUP",
+      "TAG-HONEY"
+    ],
+    "notes": [],
+    "displayOrder": 1,
+    "createdBy": "Aditree Admin",
+    "createdDate": "2026-05-02",
+    "modifiedDate": "2026-07-10"
+  },
+  {
+    "id": "RM-06",
+    "propertyId": "PROP-100235",
+    "name": "Garden Cottage",
+    "description": "Standalone cottage room surrounded by tropical landscaping.",
+    "status": "Active",
+    "areaValue": 300,
+    "areaUnit": "Sq. Ft.",
+    "roomTypeId": "RC-DLX",
+    "layoutId": "LO-STU",
+    "maxAdults": 2,
+    "maxChildren": 0,
+    "maxOccupancy": 2,
+    "baseOccupancy": 2,
+    "occupancyBasedType": "Single",
+    "bedConfigurationId": "BT-003",
+    "numberOfBeds": 1,
+    "roomOptionIds": [
+      "RO-004",
+      "RO-006"
+    ],
+    "amenityIds": [
+      "AM-001",
+      "AM-013"
+    ],
+    "tagIds": [
+      "TAG-LEIS"
+    ],
+    "notes": [],
+    "displayOrder": 2,
+    "createdBy": "Aditree Admin",
+    "createdDate": "2026-05-02",
+    "modifiedDate": "2026-07-10"
+  },
+  {
+    "id": "RM-07",
+    "propertyId": "PROP-100235",
+    "name": "Presidential Villa",
+    "description": "70 sqm villa with a private plunge pool.",
+    "status": "Active",
+    "areaValue": 750,
+    "areaUnit": "Sq. Ft.",
+    "roomTypeId": "RC-VIL",
+    "layoutId": "LO-DUP",
+    "maxAdults": 3,
+    "maxChildren": 1,
+    "maxOccupancy": 4,
+    "baseOccupancy": 2,
+    "occupancyBasedType": "Family",
+    "bedConfigurationId": "BT-001",
+    "numberOfBeds": 2,
+    "roomOptionIds": [
+      "RO-004",
+      "RO-002",
+      "RO-003"
+    ],
+    "amenityIds": [
+      "AM-001",
+      "AM-002",
+      "AM-011",
+      "AM-016",
+      "AM-012"
+    ],
+    "tagIds": [
+      "TAG-LUX",
+      "TAG-FAM"
+    ],
+    "notes": [],
+    "displayOrder": 3,
+    "createdBy": "Aditree Admin",
+    "createdDate": "2026-05-02",
+    "modifiedDate": "2026-07-10"
+  },
+  {
+    "id": "RM-08",
+    "propertyId": "PROP-100236",
+    "name": "Heritage Room",
+    "description": "Classic heritage-styled room with restored period furnishing.",
+    "status": "Inactive",
+    "areaValue": 280,
+    "areaUnit": "Sq. Ft.",
+    "roomTypeId": "RC-DLX",
+    "layoutId": "LO-STU",
+    "maxAdults": 2,
+    "maxChildren": 1,
+    "maxOccupancy": 2,
+    "baseOccupancy": 1,
+    "occupancyBasedType": "Twin",
+    "bedConfigurationId": "BT-003",
+    "numberOfBeds": 1,
+    "roomOptionIds": [
+      "RO-005"
+    ],
+    "amenityIds": [
+      "AM-001",
+      "AM-013"
+    ],
+    "tagIds": [
+      "TAG-BIZ"
+    ],
+    "notes": [],
+    "displayOrder": 1,
+    "createdBy": "Aditree Admin",
+    "createdDate": "2026-05-02",
+    "modifiedDate": "2026-07-10"
+  },
+  {
+    "id": "RM-09",
+    "propertyId": "PROP-100236",
+    "name": "Grand Suite",
+    "description": "Expansive suite with private lounge and dining area.",
+    "status": "Inactive",
+    "areaValue": 580,
+    "areaUnit": "Sq. Ft.",
+    "roomTypeId": "RC-STE",
+    "layoutId": "LO-2BR",
+    "maxAdults": 2,
+    "maxChildren": 2,
+    "maxOccupancy": 4,
+    "baseOccupancy": 2,
+    "occupancyBasedType": "Family",
+    "bedConfigurationId": "BT-001",
+    "numberOfBeds": 2,
+    "roomOptionIds": [
+      "RO-004"
+    ],
+    "amenityIds": [
+      "AM-001",
+      "AM-013",
+      "AM-016",
+      "AM-011"
+    ],
+    "tagIds": [
+      "TAG-FAM",
+      "TAG-LUX"
+    ],
+    "notes": [],
+    "displayOrder": 2,
+    "createdBy": "Aditree Admin",
+    "createdDate": "2026-05-02",
+    "modifiedDate": "2026-07-10"
+  }
+]

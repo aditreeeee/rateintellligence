@@ -1,0 +1,61 @@
+[
+  {
+    "id": "PROP-100234",
+    "companyId": "CO-0001",
+    "name": "Hotel Bay Residency",
+    "brand": "Bay Collection",
+    "city": "Bengaluru",
+    "country": "India",
+    "timezone": "Asia/Kolkata (GMT+5:30)",
+    "currency": "INR - Indian Rupee",
+    "starCategory": 5,
+    "address": "221 MG Road, Bengaluru, Karnataka 560001",
+    "status": "Active",
+    "isBenchmark": true,
+    "description": "A landmark 5-star business hotel in the heart of Bengaluru offering skyline views, curated dining and a full-service spa.",
+    "amenities": ["Free WiFi", "Swimming Pool", "Spa", "Gym", "Airport Shuttle", "Business Center", "Restaurant", "Bar"],
+    "notes": [
+      { "id": "NOTE-1", "author": "Priya Nair", "date": "2026-07-20", "tag": "Revenue", "text": "Q3 corporate rates renegotiated with 3 key accounts — expect +8% volume from August." },
+      { "id": "NOTE-2", "author": "Rahul Menon", "date": "2026-07-12", "tag": "Competitor", "text": "Taj Vivanta dropped EP rates by ~6% ahead of the monsoon season." }
+    ],
+    "updatedAt": "2026-07-18"
+  },
+  {
+    "id": "PROP-100235",
+    "companyId": "CO-0001",
+    "name": "Frozen Water Suites",
+    "brand": "Coastal Retreats",
+    "city": "Panaji",
+    "country": "India",
+    "timezone": "Asia/Kolkata (GMT+5:30)",
+    "currency": "INR - Indian Rupee",
+    "starCategory": 4,
+    "address": "Candolim Beach Road, Panaji, Goa 403515",
+    "status": "Active",
+    "isBenchmark": false,
+    "description": "Beachside boutique suites with private balconies and an infinity pool overlooking the Arabian Sea.",
+    "amenities": ["Free WiFi", "Beach Access", "Swimming Pool", "Restaurant", "Bar", "Pet Friendly"],
+    "notes": [
+      { "id": "NOTE-3", "author": "Aditree Admin", "date": "2026-07-15", "tag": "Market", "text": "Goa peak season pricing window opens November — align CP rate plans ahead of time." }
+    ],
+    "updatedAt": "2026-07-15"
+  },
+  {
+    "id": "PROP-100236",
+    "companyId": "CO-0001",
+    "name": "Yale Blue Grand",
+    "brand": "Grand Collection",
+    "city": "New Delhi",
+    "country": "India",
+    "timezone": "Asia/Kolkata (GMT+5:30)",
+    "currency": "INR - Indian Rupee",
+    "starCategory": 5,
+    "address": "12 Connaught Place, New Delhi 110001",
+    "status": "Inactive",
+    "isBenchmark": false,
+    "description": "A heritage-inspired luxury property currently undergoing seasonal renovation.",
+    "amenities": ["Free WiFi", "Spa", "Gym", "Valet Parking", "Conference Rooms"],
+    "notes": [],
+    "updatedAt": "2026-06-02"
+  }
+]

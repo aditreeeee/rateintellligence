@@ -1,0 +1,32 @@
+{
+  "competitorProperties": [
+    { "id": "COMP-01", "name": "Taj Vivanta", "city": "Bengaluru", "starCategory": 5 },
+    { "id": "COMP-02", "name": "Marriott Executive", "city": "Bengaluru", "starCategory": 5 },
+    { "id": "COMP-03", "name": "ITC Gardenia", "city": "Bengaluru", "starCategory": 5 },
+    { "id": "COMP-04", "name": "Leela Palace", "city": "Bengaluru", "starCategory": 5 }
+  ],
+  "summary": {
+    "ourAverage": 4180,
+    "competitorAverage": 4420,
+    "cheaperCount": 5,
+    "pricierCount": 3
+  },
+  "chart": [
+    { "label": "Deluxe EP", "ours": 2500, "competitor": 2350 },
+    { "label": "Deluxe CP", "ours": 2900, "competitor": 3100 },
+    { "label": "SDLX EP", "ours": 3200, "competitor": 3450 },
+    { "label": "SDLX CP", "ours": 3650, "competitor": 3500 },
+    { "label": "Exec EP", "ours": 4100, "competitor": 4450 },
+    { "label": "Exec CP", "ours": 4600, "competitor": 4300 },
+    { "label": "Suite EP", "ours": 6200, "competitor": 6600 },
+    { "label": "Suite CP", "ours": 6800, "competitor": 6550 }
+  ],
+  "table": [
+    { "mealPlan": "EP", "room": "Deluxe Room", "competitorId": "COMP-01", "competitor": "Taj Vivanta", "ourRate": 2500, "competitorRate": 2350, "diff": -150, "diffPct": -6.0, "position": "Pricier", "status": "warning" },
+    { "mealPlan": "CP", "room": "Deluxe Room", "competitorId": "COMP-02", "competitor": "Marriott Executive", "ourRate": 2900, "competitorRate": 3100, "diff": 200, "diffPct": 6.9, "position": "Cheaper", "status": "success" },
+    { "mealPlan": "EP", "room": "Super Deluxe", "competitorId": "COMP-01", "competitor": "Taj Vivanta", "ourRate": 3200, "competitorRate": 3450, "diff": 250, "diffPct": 7.8, "position": "Cheaper", "status": "success" },
+    { "mealPlan": "CP", "room": "Super Deluxe", "competitorId": "COMP-03", "competitor": "ITC Gardenia", "ourRate": 3650, "competitorRate": 3500, "diff": -150, "diffPct": -4.1, "position": "Pricier", "status": "warning" },
+    { "mealPlan": "EP", "room": "Executive", "competitorId": "COMP-03", "competitor": "ITC Gardenia", "ourRate": 4100, "competitorRate": 4450, "diff": 350, "diffPct": 8.5, "position": "Cheaper", "status": "success" },
+    { "mealPlan": "MAP", "room": "Suite", "competitorId": "COMP-04", "competitor": "Leela Palace", "ourRate": 7900, "competitorRate": 8200, "diff": 300, "diffPct": 3.8, "position": "Cheaper", "status": "success" }
+  ]
+}

@@ -1,0 +1,482 @@
+[
+  {
+    "id": "RP-10021",
+    "propertyId": "PROP-100234",
+    "roomIds": [
+      "RM-01",
+      "RM-02",
+      "RM-03",
+      "RM-04"
+    ],
+    "mealPlanCode": "EP",
+    "name": "European Plan Rate Plan",
+    "description": "European Plan pricing across 4 room categories.",
+    "status": "Active",
+    "pricingPeriods": [
+      {
+        "id": "PP-10021-1",
+        "effectiveFrom": "2026-07-01",
+        "effectiveTo": "2026-09-30",
+        "status": "Active",
+        "taxType": "Exclusive",
+        "taxMethod": "Percentage",
+        "taxValue": 12,
+        "rates": {
+          "Single": 2500,
+          "Double": 2875,
+          "Triple": 3375,
+          "Quad": 3875,
+          "AdditionalAdult": 625,
+          "AdditionalChild": 300
+        }
+      }
+    ],
+    "cancellationPolicyId": "CXL-24H",
+    "partialRefundEnabled": false,
+    "refundType": "Percentage",
+    "refundValue": 0,
+    "notes": [],
+    "createdBy": "Aditree Admin",
+    "createdDate": "2026-05-05",
+    "modifiedDate": "2026-07-15"
+  },
+  {
+    "id": "RP-10022",
+    "propertyId": "PROP-100234",
+    "roomIds": [
+      "RM-01",
+      "RM-02",
+      "RM-03",
+      "RM-04"
+    ],
+    "mealPlanCode": "CP",
+    "name": "Continental Plan Rate Plan",
+    "description": "Continental Plan pricing across 4 room categories.",
+    "status": "Active",
+    "pricingPeriods": [
+      {
+        "id": "PP-10022-1",
+        "effectiveFrom": "2026-07-01",
+        "effectiveTo": "2026-09-30",
+        "status": "Active",
+        "taxType": "Exclusive",
+        "taxMethod": "Percentage",
+        "taxValue": 12,
+        "rates": {
+          "Single": 2900,
+          "Double": 3335,
+          "Triple": 3915,
+          "Quad": 4495,
+          "AdditionalAdult": 725,
+          "AdditionalChild": 348
+        }
+      }
+    ],
+    "cancellationPolicyId": "CXL-24H",
+    "partialRefundEnabled": false,
+    "refundType": "Percentage",
+    "refundValue": 0,
+    "notes": [],
+    "createdBy": "Aditree Admin",
+    "createdDate": "2026-05-05",
+    "modifiedDate": "2026-07-15"
+  },
+  {
+    "id": "RP-10023",
+    "propertyId": "PROP-100234",
+    "roomIds": [
+      "RM-01",
+      "RM-02",
+      "RM-03",
+      "RM-04"
+    ],
+    "mealPlanCode": "MAP",
+    "name": "Modified American Plan Rate Plan",
+    "description": "Modified American Plan pricing across 4 room categories.",
+    "status": "Active",
+    "pricingPeriods": [
+      {
+        "id": "PP-10023-1",
+        "effectiveFrom": "2026-07-01",
+        "effectiveTo": "2026-09-30",
+        "status": "Active",
+        "taxType": "Exclusive",
+        "taxMethod": "Percentage",
+        "taxValue": 12,
+        "rates": {
+          "Single": 3600,
+          "Double": 4140,
+          "Triple": 4860,
+          "Quad": 5580,
+          "AdditionalAdult": 900,
+          "AdditionalChild": 432
+        }
+      }
+    ],
+    "cancellationPolicyId": "CXL-24H",
+    "partialRefundEnabled": false,
+    "refundType": "Percentage",
+    "refundValue": 0,
+    "notes": [],
+    "createdBy": "Aditree Admin",
+    "createdDate": "2026-05-05",
+    "modifiedDate": "2026-07-15"
+  },
+  {
+    "id": "RP-10024",
+    "propertyId": "PROP-100234",
+    "roomIds": [
+      "RM-01",
+      "RM-02",
+      "RM-03",
+      "RM-04"
+    ],
+    "mealPlanCode": "AP",
+    "name": "American Plan Rate Plan",
+    "description": "American Plan pricing across 4 room categories.",
+    "status": "Active",
+    "pricingPeriods": [
+      {
+        "id": "PP-10024-1",
+        "effectiveFrom": "2026-07-01",
+        "effectiveTo": "2026-09-30",
+        "status": "Active",
+        "taxType": "Exclusive",
+        "taxMethod": "Percentage",
+        "taxValue": 12,
+        "rates": {
+          "Single": 4400,
+          "Double": 5060,
+          "Triple": 5940,
+          "Quad": 6820,
+          "AdditionalAdult": 1100,
+          "AdditionalChild": 528
+        }
+      }
+    ],
+    "cancellationPolicyId": "CXL-24H",
+    "partialRefundEnabled": false,
+    "refundType": "Percentage",
+    "refundValue": 0,
+    "notes": [],
+    "createdBy": "Aditree Admin",
+    "createdDate": "2026-05-05",
+    "modifiedDate": "2026-07-15"
+  },
+  {
+    "id": "RP-10025",
+    "propertyId": "PROP-100235",
+    "roomIds": [
+      "RM-05",
+      "RM-06",
+      "RM-07"
+    ],
+    "mealPlanCode": "EP",
+    "name": "European Plan Rate Plan",
+    "description": "European Plan pricing across 3 room categories.",
+    "status": "Active",
+    "pricingPeriods": [
+      {
+        "id": "PP-10025-1",
+        "effectiveFrom": "2026-07-01",
+        "effectiveTo": "2026-09-30",
+        "status": "Active",
+        "taxType": "Exclusive",
+        "taxMethod": "Percentage",
+        "taxValue": 12,
+        "rates": {
+          "Single": 3400,
+          "Double": 3910,
+          "Triple": 4590,
+          "Quad": 5270,
+          "AdditionalAdult": 850,
+          "AdditionalChild": 408
+        }
+      }
+    ],
+    "cancellationPolicyId": "CXL-24H",
+    "partialRefundEnabled": false,
+    "refundType": "Percentage",
+    "refundValue": 0,
+    "notes": [],
+    "createdBy": "Aditree Admin",
+    "createdDate": "2026-05-05",
+    "modifiedDate": "2026-07-15"
+  },
+  {
+    "id": "RP-10026",
+    "propertyId": "PROP-100235",
+    "roomIds": [
+      "RM-05",
+      "RM-06",
+      "RM-07"
+    ],
+    "mealPlanCode": "CP",
+    "name": "Continental Plan Rate Plan",
+    "description": "Continental Plan pricing across 3 room categories.",
+    "status": "Active",
+    "pricingPeriods": [
+      {
+        "id": "PP-10026-1",
+        "effectiveFrom": "2026-07-01",
+        "effectiveTo": "2026-09-30",
+        "status": "Active",
+        "taxType": "Exclusive",
+        "taxMethod": "Percentage",
+        "taxValue": 12,
+        "rates": {
+          "Single": 3940,
+          "Double": 4531,
+          "Triple": 5319,
+          "Quad": 6107,
+          "AdditionalAdult": 985,
+          "AdditionalChild": 473
+        }
+      }
+    ],
+    "cancellationPolicyId": "CXL-24H",
+    "partialRefundEnabled": false,
+    "refundType": "Percentage",
+    "refundValue": 0,
+    "notes": [],
+    "createdBy": "Aditree Admin",
+    "createdDate": "2026-05-05",
+    "modifiedDate": "2026-07-15"
+  },
+  {
+    "id": "RP-10027",
+    "propertyId": "PROP-100235",
+    "roomIds": [
+      "RM-05",
+      "RM-06",
+      "RM-07"
+    ],
+    "mealPlanCode": "MAP",
+    "name": "Modified American Plan Rate Plan",
+    "description": "Modified American Plan pricing across 3 room categories.",
+    "status": "Active",
+    "pricingPeriods": [
+      {
+        "id": "PP-10027-1",
+        "effectiveFrom": "2026-07-01",
+        "effectiveTo": "2026-09-30",
+        "status": "Active",
+        "taxType": "Exclusive",
+        "taxMethod": "Percentage",
+        "taxValue": 12,
+        "rates": {
+          "Single": 4900,
+          "Double": 5635,
+          "Triple": 6615,
+          "Quad": 7595,
+          "AdditionalAdult": 1225,
+          "AdditionalChild": 588
+        }
+      }
+    ],
+    "cancellationPolicyId": "CXL-24H",
+    "partialRefundEnabled": false,
+    "refundType": "Percentage",
+    "refundValue": 0,
+    "notes": [],
+    "createdBy": "Aditree Admin",
+    "createdDate": "2026-05-05",
+    "modifiedDate": "2026-07-15"
+  },
+  {
+    "id": "RP-10028",
+    "propertyId": "PROP-100235",
+    "roomIds": [
+      "RM-05",
+      "RM-06",
+      "RM-07"
+    ],
+    "mealPlanCode": "AP",
+    "name": "American Plan Rate Plan",
+    "description": "American Plan pricing across 3 room categories.",
+    "status": "Active",
+    "pricingPeriods": [
+      {
+        "id": "PP-10028-1",
+        "effectiveFrom": "2026-07-01",
+        "effectiveTo": "2026-09-30",
+        "status": "Active",
+        "taxType": "Exclusive",
+        "taxMethod": "Percentage",
+        "taxValue": 12,
+        "rates": {
+          "Single": 5980,
+          "Double": 6877,
+          "Triple": 8073,
+          "Quad": 9269,
+          "AdditionalAdult": 1495,
+          "AdditionalChild": 718
+        }
+      }
+    ],
+    "cancellationPolicyId": "CXL-24H",
+    "partialRefundEnabled": false,
+    "refundType": "Percentage",
+    "refundValue": 0,
+    "notes": [],
+    "createdBy": "Aditree Admin",
+    "createdDate": "2026-05-05",
+    "modifiedDate": "2026-07-15"
+  },
+  {
+    "id": "RP-10029",
+    "propertyId": "PROP-100236",
+    "roomIds": [
+      "RM-08",
+      "RM-09"
+    ],
+    "mealPlanCode": "EP",
+    "name": "European Plan Rate Plan",
+    "description": "European Plan pricing across 2 room categories.",
+    "status": "Inactive",
+    "pricingPeriods": [
+      {
+        "id": "PP-10029-1",
+        "effectiveFrom": "2026-07-01",
+        "effectiveTo": "2026-09-30",
+        "status": "Active",
+        "taxType": "Exclusive",
+        "taxMethod": "Percentage",
+        "taxValue": 12,
+        "rates": {
+          "Single": 2800,
+          "Double": 3220,
+          "Triple": 3780,
+          "Quad": 4340,
+          "AdditionalAdult": 700,
+          "AdditionalChild": 336
+        }
+      }
+    ],
+    "cancellationPolicyId": "CXL-24H",
+    "partialRefundEnabled": false,
+    "refundType": "Percentage",
+    "refundValue": 0,
+    "notes": [],
+    "createdBy": "Aditree Admin",
+    "createdDate": "2026-05-05",
+    "modifiedDate": "2026-07-15"
+  },
+  {
+    "id": "RP-10030",
+    "propertyId": "PROP-100236",
+    "roomIds": [
+      "RM-08",
+      "RM-09"
+    ],
+    "mealPlanCode": "CP",
+    "name": "Continental Plan Rate Plan",
+    "description": "Continental Plan pricing across 2 room categories.",
+    "status": "Inactive",
+    "pricingPeriods": [
+      {
+        "id": "PP-10030-1",
+        "effectiveFrom": "2026-07-01",
+        "effectiveTo": "2026-09-30",
+        "status": "Active",
+        "taxType": "Exclusive",
+        "taxMethod": "Percentage",
+        "taxValue": 12,
+        "rates": {
+          "Single": 3250,
+          "Double": 3737,
+          "Triple": 4388,
+          "Quad": 5038,
+          "AdditionalAdult": 813,
+          "AdditionalChild": 390
+        }
+      }
+    ],
+    "cancellationPolicyId": "CXL-24H",
+    "partialRefundEnabled": false,
+    "refundType": "Percentage",
+    "refundValue": 0,
+    "notes": [],
+    "createdBy": "Aditree Admin",
+    "createdDate": "2026-05-05",
+    "modifiedDate": "2026-07-15"
+  },
+  {
+    "id": "RP-10031",
+    "propertyId": "PROP-100236",
+    "roomIds": [
+      "RM-08",
+      "RM-09"
+    ],
+    "mealPlanCode": "MAP",
+    "name": "Modified American Plan Rate Plan",
+    "description": "Modified American Plan pricing across 2 room categories.",
+    "status": "Inactive",
+    "pricingPeriods": [
+      {
+        "id": "PP-10031-1",
+        "effectiveFrom": "2026-07-01",
+        "effectiveTo": "2026-09-30",
+        "status": "Active",
+        "taxType": "Exclusive",
+        "taxMethod": "Percentage",
+        "taxValue": 12,
+        "rates": {
+          "Single": 4030,
+          "Double": 4635,
+          "Triple": 5441,
+          "Quad": 6247,
+          "AdditionalAdult": 1008,
+          "AdditionalChild": 484
+        }
+      }
+    ],
+    "cancellationPolicyId": "CXL-24H",
+    "partialRefundEnabled": false,
+    "refundType": "Percentage",
+    "refundValue": 0,
+    "notes": [],
+    "createdBy": "Aditree Admin",
+    "createdDate": "2026-05-05",
+    "modifiedDate": "2026-07-15"
+  },
+  {
+    "id": "RP-10032",
+    "propertyId": "PROP-100236",
+    "roomIds": [
+      "RM-08",
+      "RM-09"
+    ],
+    "mealPlanCode": "AP",
+    "name": "American Plan Rate Plan",
+    "description": "American Plan pricing across 2 room categories.",
+    "status": "Inactive",
+    "pricingPeriods": [
+      {
+        "id": "PP-10032-1",
+        "effectiveFrom": "2026-07-01",
+        "effectiveTo": "2026-09-30",
+        "status": "Active",
+        "taxType": "Exclusive",
+        "taxMethod": "Percentage",
+        "taxValue": 12,
+        "rates": {
+          "Single": 4930,
+          "Double": 5670,
+          "Triple": 6656,
+          "Quad": 7642,
+          "AdditionalAdult": 1233,
+          "AdditionalChild": 592
+        }
+      }
+    ],
+    "cancellationPolicyId": "CXL-24H",
+    "partialRefundEnabled": false,
+    "refundType": "Percentage",
+    "refundValue": 0,
+    "notes": [],
+    "createdBy": "Aditree Admin",
+    "createdDate": "2026-05-05",
+    "modifiedDate": "2026-07-15"
+  }
+]

@@ -1,0 +1,129 @@
+/* ==========================================================================
+   RateIQ Design System — CSS Custom Properties
+   Palette: Frozen Water / Secondary / Yale Blue / Pale Sky / Fresh Sky
+   ========================================================================== */
+
+:root {
+  /* ---- Brand palette ---- */
+  --c-frozen-water: #bee9e8;
+  --c-secondary: #62b6cb;
+  --c-yale-blue: #1b4965;
+  --c-pale-sky: #cae9ff;
+  --c-fresh-sky: #5fa8d3;
+
+  /* ---- Derived brand tones ---- */
+  --c-yale-blue-700: #143a52;
+  --c-yale-blue-900: #0d2738;
+  --c-fresh-sky-600: #4a92ba;
+
+  /* ---- Semantic accents ---- */
+  --c-success: #2fb88a;
+  --c-success-bg: #e4f8f1;
+  --c-warning: #e7a339;
+  --c-warning-bg: #fdf3e1;
+  --c-danger: #e2596b;
+  --c-danger-bg: #fdeaed;
+  --c-info: var(--c-fresh-sky);
+  --c-info-bg: #eaf5fc;
+
+  /* ---- Comparison semantics ---- */
+  --c-ours: #4a7fe0;
+  --c-cheaper: #2fb88a;
+  --c-pricier: #e2596b;
+
+  /* ---- Surface / background system ---- */
+  --bg-app: linear-gradient(160deg, #f3fbfc 0%, #eaf5f8 28%, #eef6fb 55%, #f6fafd 100%);
+  --bg-sidebar: linear-gradient(195deg, var(--c-yale-blue) 0%, var(--c-yale-blue-900) 100%);
+  --bg-topbar: rgba(255, 255, 255, 0.66);
+  --bg-card: rgba(255, 255, 255, 0.72);
+  --bg-card-solid: #ffffff;
+  --bg-card-hover: rgba(255, 255, 255, 0.9);
+  --bg-input: rgba(255, 255, 255, 0.65);
+  --bg-chip: rgba(98, 182, 203, 0.14);
+  --bg-overlay: rgba(13, 39, 56, 0.45);
+
+  /* ---- Text ---- */
+  --text-primary: #10222e;
+  --text-secondary: #4c6473;
+  --text-muted: #8298a6;
+  --text-inverse: #f3fbfc;
+  --text-inverse-muted: rgba(243, 251, 252, 0.62);
+  --text-link: var(--c-fresh-sky-600);
+
+  /* ---- Borders ---- */
+  --border-subtle: rgba(27, 73, 101, 0.08);
+  --border-default: rgba(27, 73, 101, 0.14);
+  --border-strong: rgba(27, 73, 101, 0.24);
+  --border-focus: var(--c-fresh-sky);
+
+  /* ---- Glass effect ---- */
+  --glass-blur: 18px;
+  --glass-border: 1px solid rgba(255, 255, 255, 0.5);
+  --glass-shadow: 0 1px 1px rgba(27, 73, 101, 0.04), 0 8px 24px -8px rgba(27, 73, 101, 0.14);
+
+  /* ---- Elevation shadows ---- */
+  --shadow-xs: 0 1px 2px rgba(16, 34, 46, 0.06);
+  --shadow-sm: 0 2px 8px rgba(16, 34, 46, 0.06), 0 1px 2px rgba(16, 34, 46, 0.04);
+  --shadow-md: 0 6px 20px -4px rgba(16, 34, 46, 0.12), 0 2px 6px rgba(16, 34, 46, 0.06);
+  --shadow-lg: 0 16px 40px -12px rgba(16, 34, 46, 0.22), 0 4px 12px rgba(16, 34, 46, 0.08);
+  --shadow-glow-sky: 0 0 0 4px rgba(95, 168, 211, 0.16);
+  --shadow-glow-danger: 0 0 0 4px rgba(226, 89, 107, 0.14);
+
+  /* ---- Gradients (buttons / accents) ---- */
+  --grad-primary: linear-gradient(135deg, var(--c-fresh-sky) 0%, var(--c-secondary) 55%, var(--c-yale-blue) 120%);
+  --grad-primary-hover: linear-gradient(135deg, #6bb4dd 0%, #6ec0d6 55%, #235a7c 120%);
+  --grad-accent: linear-gradient(135deg, var(--c-pale-sky) 0%, var(--c-frozen-water) 100%);
+  --grad-sidebar-active: linear-gradient(135deg, rgba(95, 168, 211, 0.28), rgba(98, 182, 203, 0.12));
+  --grad-text: linear-gradient(120deg, var(--c-yale-blue) 0%, var(--c-fresh-sky) 100%);
+
+  /* ---- Radii ---- */
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 18px;
+  --radius-xl: 22px;
+  --radius-pill: 999px;
+
+  /* ---- Spacing scale ---- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 32px;
+  --space-8: 40px;
+  --space-9: 48px;
+  --space-10: 64px;
+
+  /* ---- Typography ---- */
+  --font-sans: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --fs-xs: 0.75rem;
+  --fs-sm: 0.8125rem;
+  --fs-base: 0.9375rem;
+  --fs-md: 1.0625rem;
+  --fs-lg: 1.25rem;
+  --fs-xl: 1.5rem;
+  --fs-2xl: 1.875rem;
+  --fs-3xl: 2.25rem;
+  --lh-tight: 1.2;
+  --lh-normal: 1.5;
+
+  /* ---- Motion ---- */
+  --dur-fast: 160ms;
+  --dur-base: 240ms;
+  --dur-slow: 340ms;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* ---- Layout ---- */
+  --sidebar-w: 264px;
+  --sidebar-w-collapsed: 76px;
+  --topbar-h: 68px;
+  --z-topbar: 40;
+  --z-sidebar: 50;
+  --z-overlay: 90;
+  --z-modal: 100;
+  --z-toast: 110;
+  --z-tooltip: 120;
+}

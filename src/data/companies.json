@@ -1,0 +1,11 @@
+[
+  {
+    "id": "CO-0001",
+    "name": "Aditree Hospitality Group",
+    "owner": { "name": "Aditree Admin", "email": "eglobeaditree@gmail.com", "role": "Company Owner" },
+    "admins": [
+      { "name": "Rahul Menon", "email": "rahul.menon@aditree.com", "role": "Company Admin" },
+      { "name": "Priya Nair", "email": "priya.nair@aditree.com", "role": "Company Admin" }
+    ]
+  }
+]

@@ -1,0 +1,145 @@
+/* ==========================================================================
+   Page-specific styles
+   ========================================================================== */
+
+/* ---------- Property / Room list cards ---------- */
+.entity-card { padding: var(--space-5); display: flex; flex-direction: column; gap: var(--space-4); }
+.entity-card__top { display: flex; align-items: flex-start; gap: var(--space-3); }
+.entity-card__avatar {
+  width: 46px; height: 46px; border-radius: var(--radius-md); flex-shrink: 0;
+  background: var(--grad-accent); color: var(--c-yale-blue);
+  display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: var(--fs-sm);
+}
+.entity-card__title { font-size: var(--fs-base); font-weight: 650; }
+.entity-card__meta { font-size: var(--fs-xs); color: var(--text-muted); margin-top: 2px; }
+.entity-card__desc { font-size: var(--fs-sm); color: var(--text-secondary); line-height: var(--lh-normal); }
+.entity-card__stats { display: flex; gap: var(--space-5); font-size: var(--fs-xs); color: var(--text-muted); }
+.entity-card__stats strong { display: block; font-size: var(--fs-base); color: var(--text-primary); font-weight: 700; }
+.entity-card__footer { display: flex; align-items: center; justify-content: space-between; padding-top: var(--space-3); border-top: 1px solid var(--border-subtle); }
+.entity-card__actions { display: flex; gap: var(--space-1); }
+.star-row { display: flex; gap: 2px; }
+.star-row svg { width: 13px; height: 13px; color: var(--c-warning); fill: var(--c-warning); }
+
+.toolbar { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); flex-wrap: wrap; margin-bottom: var(--space-6); }
+.view-toggle { display: flex; background: var(--bg-card); border: 1px solid var(--border-default); border-radius: var(--radius-md); padding: 3px; gap: 2px; }
+.view-toggle button { width: 32px; height: 30px; display: flex; align-items: center; justify-content: center; border-radius: 9px; color: var(--text-muted); cursor: pointer; border: none; background: transparent; transition: all var(--dur-fast); }
+.view-toggle button svg { width: 15px; height: 15px; }
+.view-toggle button.is-active { background: var(--grad-primary); color: #fff; box-shadow: var(--shadow-sm); }
+
+/* ---------- Add Property / Room / Rate Plan forms ---------- */
+.form-page-grid { display: grid; grid-template-columns: 1fr 320px; gap: var(--space-6); align-items: start; }
+@media (max-width: 1100px) { .form-page-grid { grid-template-columns: 1fr; } }
+
+.form-stack { display: flex; flex-direction: column; gap: var(--space-6); }
+.form-actions-bar {
+  display: flex; align-items: center; justify-content: flex-end; gap: var(--space-3);
+  position: sticky; bottom: var(--space-5);
+}
+
+.summary-card__row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border-subtle); font-size: var(--fs-sm); }
+.summary-card__row:last-child { border-bottom: none; }
+.summary-card__label { color: var(--text-muted); }
+.summary-card__value { font-weight: 620; }
+
+.amenity-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: var(--space-3); }
+.amenity-check { display: flex; align-items: center; gap: var(--space-2); padding: 10px 12px; border: 1px solid var(--border-default); border-radius: var(--radius-md); font-size: var(--fs-xs); font-weight: 600; cursor: pointer; transition: all var(--dur-fast); background: var(--bg-input); }
+.amenity-check:hover { border-color: var(--c-fresh-sky); background: #fff; }
+.amenity-check input { accent-color: var(--c-fresh-sky-600); width: 15px; height: 15px; }
+.amenity-check svg { width: 14px; height: 14px; color: var(--c-yale-blue); }
+
+.progress-track { height: 6px; background: rgba(27,73,101,0.09); border-radius: var(--radius-pill); overflow: hidden; }
+.progress-fill { height: 100%; background: var(--grad-primary); border-radius: var(--radius-pill); transition: width var(--dur-slow) var(--ease-out); }
+
+/* ---------- Rate Plans hierarchy ---------- */
+.rp-room-header { display: flex; align-items: center; gap: var(--space-3); }
+.rp-mealplan-badge {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 42px; padding: 4px 9px; border-radius: var(--radius-sm);
+  font-size: 11px; font-weight: 700; letter-spacing: 0.02em;
+}
+.rp-mealplan-badge.EP { background: var(--c-info-bg); color: var(--c-fresh-sky-600); }
+.rp-mealplan-badge.CP { background: var(--c-success-bg); color: var(--c-success); }
+.rp-mealplan-badge.MAP { background: var(--c-warning-bg); color: var(--c-warning); }
+.rp-mealplan-badge.AP { background: rgba(98,182,203,0.16); color: var(--c-yale-blue); }
+
+.rp-occupancy-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: var(--space-3); }
+.rp-occupancy-card {
+  padding: var(--space-4); border-radius: var(--radius-md); border: 1px solid var(--border-subtle);
+  background: rgba(255,255,255,0.55); display: flex; flex-direction: column; gap: var(--space-2);
+  transition: all var(--dur-fast) var(--ease-out);
+}
+.rp-occupancy-card:hover { border-color: var(--c-fresh-sky); background: #fff; box-shadow: var(--shadow-sm); transform: translateY(-2px); }
+.rp-occupancy-card__top { display: flex; align-items: center; justify-content: space-between; }
+.rp-occupancy-card__rate { font-size: var(--fs-lg); font-weight: 700; color: var(--c-yale-blue); }
+.rp-occupancy-card__label { font-size: var(--fs-xs); color: var(--text-muted); font-weight: 620; }
+
+.rp-mealplan-block + .rp-mealplan-block { margin-top: var(--space-5); }
+.rp-mealplan-block__head { display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-3); }
+.rp-mealplan-block__title { font-size: var(--fs-sm); font-weight: 650; }
+.rp-mealplan-block__desc { font-size: 11px; color: var(--text-muted); }
+
+/* ---------- Calendar ---------- */
+.calendar-toolbar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--space-4); margin-bottom: var(--space-5); }
+.calendar-legend { display: flex; align-items: center; gap: var(--space-4); font-size: var(--fs-xs); color: var(--text-muted); }
+.calendar-legend__swatch { display: inline-flex; align-items: center; gap: 6px; }
+.calendar-legend__dot { width: 10px; height: 10px; border-radius: 3px; }
+
+.rate-calendar-wrap { overflow: auto; border-radius: var(--radius-lg); max-height: 640px; position: relative; }
+table.rate-calendar { border-collapse: separate; border-spacing: 0; font-size: var(--fs-sm); width: max-content; min-width: 100%; }
+.rate-calendar th, .rate-calendar td { border-bottom: 1px solid var(--border-subtle); }
+.rate-calendar thead th {
+  position: sticky; top: 0; z-index: 3;
+  background: rgba(238,246,251,0.97); backdrop-filter: blur(6px);
+  padding: 10px 14px; text-align: center; white-space: nowrap;
+  font-weight: 700; color: var(--text-secondary); font-size: var(--fs-xs);
+  border-bottom: 1px solid var(--border-default);
+}
+.rate-calendar thead th .dow { display: block; font-size: 10px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; }
+.rate-calendar thead th.is-weekend { background: rgba(190,233,232,0.5); }
+.rate-calendar thead th.is-today { background: rgba(95,168,211,0.22); color: var(--c-yale-blue); }
+.rate-calendar .row-head {
+  position: sticky; left: 0; z-index: 2;
+  background: rgba(255,255,255,0.97); backdrop-filter: blur(6px);
+  padding: 12px 16px; text-align: left; white-space: nowrap;
+  border-right: 1px solid var(--border-default);
+  min-width: 220px;
+}
+.rate-calendar thead th.corner { position: sticky; left: 0; top: 0; z-index: 4; background: rgba(238,246,251,0.97); min-width: 220px; text-align: left; }
+.rate-calendar .row-head__room { font-weight: 650; font-size: var(--fs-sm); }
+.rate-calendar .row-head__meal { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
+.rate-calendar tbody tr:hover .row-head { background: rgba(202,233,255,0.5); }
+
+.rate-cell {
+  padding: 10px 14px; text-align: center; cursor: pointer; white-space: nowrap;
+  font-weight: 620; color: var(--text-primary);
+  transition: background var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast);
+  position: relative;
+}
+.rate-cell:hover { background: rgba(95,168,211,0.16); transform: scale(1.04); box-shadow: inset 0 0 0 1px var(--c-fresh-sky); border-radius: 8px; z-index: 1; }
+.rate-cell.is-weekend { background: rgba(190,233,232,0.22); }
+.rate-cell.is-today-col { background: rgba(95,168,211,0.1); }
+.rate-cell.is-weekend.is-today-col { background: rgba(95,168,211,0.2); }
+
+/* ---------- Comparison (future module) ---------- */
+.comparison-chart { display: flex; align-items: flex-end; gap: var(--space-4); height: 220px; padding: var(--space-4) var(--space-2) 0; }
+.comparison-chart__group { flex: 1; display: flex; flex-direction: column; align-items: center; gap: var(--space-2); height: 100%; justify-content: flex-end; }
+.comparison-chart__bars { display: flex; align-items: flex-end; gap: 5px; height: 100%; }
+.comparison-chart__bar { width: 16px; border-radius: 5px 5px 2px 2px; transition: transform var(--dur-base) var(--ease-out); }
+.comparison-chart__bar:hover { transform: scaleY(1.03); filter: brightness(1.08); }
+.comparison-chart__bar.ours { background: linear-gradient(180deg, var(--c-ours), #3a63b8); }
+.comparison-chart__bar.cheaper { background: linear-gradient(180deg, var(--c-cheaper), #1f8f6d); }
+.comparison-chart__bar.pricier { background: linear-gradient(180deg, var(--c-pricier), #c23e50); }
+.comparison-chart__label { font-size: 10px; color: var(--text-muted); text-align: center; max-width: 70px; }
+
+.position-badge { display: inline-flex; align-items: center; gap: 4px; }
+
+/* ---------- Settings placeholder ---------- */
+.settings-nav { display: flex; flex-direction: column; gap: 2px; }
+.settings-nav a { padding: 10px 12px; border-radius: var(--radius-sm); font-size: var(--fs-sm); color: var(--text-secondary); display: flex; align-items: center; gap: var(--space-3); transition: all var(--dur-fast); }
+.settings-nav a svg { width: 16px; height: 16px; }
+.settings-nav a:hover { background: var(--bg-chip); color: var(--c-yale-blue); }
+.settings-nav a.is-active { background: var(--grad-accent); color: var(--c-yale-blue); font-weight: 640; }
+
+/* ---------- Misc ---------- */
+.section-title-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-4); }
+.section-title { font-size: var(--fs-lg); font-weight: 650; }
