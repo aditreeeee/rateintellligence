@@ -4,6 +4,8 @@
 
 /* ---------- Property / Room list cards ---------- */
 .entity-card { padding: var(--space-5); display: flex; flex-direction: column; gap: var(--space-4); }
+.entity-card--clickable { cursor: pointer; }
+.entity-card--clickable:focus-visible { outline: 2px solid var(--c-fresh-sky); outline-offset: 2px; }
 .entity-card__top { display: flex; align-items: flex-start; gap: var(--space-3); }
 .entity-card__avatar {
   width: 46px; height: 46px; border-radius: var(--radius-md); flex-shrink: 0;
@@ -30,7 +32,8 @@
 .form-page-grid { display: grid; grid-template-columns: 1fr 320px; gap: var(--space-6); align-items: start; }
 @media (max-width: 1100px) { .form-page-grid { grid-template-columns: 1fr; } }
 
-.form-stack { display: flex; flex-direction: column; gap: var(--space-6); }
+.form-stack { display: flex; flex-direction: column; gap: var(--space-6); animation: step-fade var(--dur-base) var(--ease-out); }
+@keyframes step-fade { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
 .form-actions-bar {
   display: flex; align-items: center; justify-content: flex-end; gap: var(--space-3);
   position: sticky; bottom: var(--space-5);
@@ -84,13 +87,77 @@
 .calendar-legend__swatch { display: inline-flex; align-items: center; gap: 6px; }
 .calendar-legend__dot { width: 10px; height: 10px; border-radius: 3px; }
 
-.rate-calendar-wrap { overflow: auto; border-radius: var(--radius-lg); max-height: 640px; position: relative; }
-table.rate-calendar { border-collapse: separate; border-spacing: 0; font-size: var(--fs-sm); width: max-content; min-width: 100%; }
+/* ---------- Calendar page: filter panel + matrix locked to one shared
+   viewport-relative height so both columns' bottoms align flush ---------- */
+.module-layout--fill {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  gap: var(--space-6);
+  height: calc(100vh - 300px);
+  min-height: 420px;
+  overflow: hidden;
+}
+.module-layout--fill > .filter-panel {
+  position: static;
+  flex: 0 0 280px;
+  width: 280px;
+  height: 100%;
+  overflow-y: auto;
+  padding-right: 2px;
+}
+.module-layout--fill > .calendar-card {
+  flex: 1 1 auto;
+  height: 100%;
+  min-width: 0;
+}
+@media (max-width: 1000px) {
+  .module-layout--fill { flex-direction: column; height: auto; }
+  .module-layout--fill > .filter-panel { width: 100%; height: auto; }
+  .module-layout--fill > .calendar-card { height: 70vh; }
+}
+
+/* Fixed viewport boundary: the calendar card itself never grows past its
+   flex track or the browser width — only rate-calendar-wrap scrolls, on
+   both axes, so the page itself never gains a scrollbar of its own. */
+.calendar-card {
+  width: 100%; max-width: 100%; min-width: 0; height: 100%;
+  overflow: hidden;
+  display: flex; flex-direction: column;
+}
+.calendar-card:has(.empty-state) { justify-content: center; }
+.rate-calendar-wrap {
+  overflow: auto; border-radius: var(--radius-lg); position: relative;
+  width: 100%; max-width: 100%;
+  flex: 1 1 auto;
+  min-height: 0;
+  background: rgba(255,255,255,0.28);
+  scroll-behavior: smooth;
+  scrollbar-color: rgba(27,73,101,0.4) rgba(27,73,101,0.06);
+}
+.rate-calendar-wrap::-webkit-scrollbar { height: 10px; width: 10px; }
+.rate-calendar-wrap::-webkit-scrollbar-track { background: rgba(27,73,101,0.06); }
+.rate-calendar-wrap::-webkit-scrollbar-thumb { background: rgba(27,73,101,0.4); border-radius: var(--radius-pill); }
+.rate-calendar-wrap::-webkit-scrollbar-thumb:hover { background: rgba(27,73,101,0.55); }
+
+/* Fluid day columns: grow to fill available width when the window has few
+   columns (e.g. Last 7 Days), but never shrink below a legible minimum —
+   only then does the wrap scroll horizontally (e.g. a full 31-day month). */
+.rate-calendar thead th:not(.corner) { min-width: 50px; width: auto; }
+.rate-calendar .rate-cell { min-width: 50px; width: auto; }
+
+/* Condense date headers on smaller desktop viewports to conserve horizontal
+   space — drop the weekday label and narrow columns instead of clipping. */
+@media (max-width: 1366px) {
+  .rate-calendar thead th:not(.corner) { min-width: 44px; padding: var(--space-2) 4px; }
+  .rate-calendar .rate-cell { min-width: 44px; padding: var(--space-2) 4px; font-size: 11px; }
+}
+table.rate-calendar { border-collapse: separate; border-spacing: 0; font-size: var(--fs-sm); width: 100%; min-width: 100%; table-layout: auto; }
 .rate-calendar th, .rate-calendar td { border-bottom: 1px solid var(--border-subtle); }
 .rate-calendar thead th {
   position: sticky; top: 0; z-index: 3;
-  background: rgba(238,246,251,0.97); backdrop-filter: blur(6px);
-  padding: 10px 14px; text-align: center; white-space: nowrap;
+  background: rgba(238,246,251,0.92); backdrop-filter: blur(12px) saturate(160%); -webkit-backdrop-filter: blur(12px) saturate(160%);
+  padding: var(--space-3) var(--space-4); text-align: center; white-space: nowrap;
   font-weight: 700; color: var(--text-secondary); font-size: var(--fs-xs);
   border-bottom: 1px solid var(--border-default);
 }
@@ -99,26 +166,136 @@ table.rate-calendar { border-collapse: separate; border-spacing: 0; font-size: v
 .rate-calendar thead th.is-today { background: rgba(95,168,211,0.22); color: var(--c-yale-blue); }
 .rate-calendar .row-head {
   position: sticky; left: 0; z-index: 2;
-  background: rgba(255,255,255,0.97); backdrop-filter: blur(6px);
-  padding: 12px 16px; text-align: left; white-space: nowrap;
+  background: rgba(255,255,255,0.92); backdrop-filter: blur(14px) saturate(160%); -webkit-backdrop-filter: blur(14px) saturate(160%);
+  padding: var(--space-3) var(--space-4); text-align: left; white-space: nowrap;
   border-right: 1px solid var(--border-default);
-  min-width: 220px;
+  min-width: 240px;
+  transition: background var(--dur-base) var(--ease-out);
 }
-.rate-calendar thead th.corner { position: sticky; left: 0; top: 0; z-index: 4; background: rgba(238,246,251,0.97); min-width: 220px; text-align: left; }
-.rate-calendar .row-head__room { font-weight: 650; font-size: var(--fs-sm); }
-.rate-calendar .row-head__meal { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
-.rate-calendar tbody tr:hover .row-head { background: rgba(202,233,255,0.5); }
+.rate-calendar thead th.corner { position: sticky; left: 0; top: 0; z-index: 4; background: rgba(238,246,251,0.95); min-width: 240px; text-align: left; }
+.rate-calendar .row-head__room { font-weight: 700; font-size: var(--fs-sm); }
+.rate-calendar .row-head__meal { font-size: 11px; font-weight: 500; color: var(--text-muted); margin-top: 1px; }
+.rate-calendar tbody tr:hover .row-head { background: rgba(202,233,255,0.45); }
 
 .rate-cell {
-  padding: 10px 14px; text-align: center; cursor: pointer; white-space: nowrap;
-  font-weight: 620; color: var(--text-primary);
+  padding: var(--space-3) var(--space-4); text-align: center; cursor: pointer; white-space: nowrap;
+  font-weight: 600; color: var(--text-primary);
+  font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1;
   transition: background var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast);
   position: relative;
 }
 .rate-cell:hover { background: rgba(95,168,211,0.16); transform: scale(1.04); box-shadow: inset 0 0 0 1px var(--c-fresh-sky); border-radius: 8px; z-index: 1; }
-.rate-cell.is-weekend { background: rgba(190,233,232,0.22); }
+/* Instant press feedback — pure CSS, so the click feels immediate even
+   before React processes the resulting state update. */
+.rate-cell:active { transform: scale(0.95); transition-duration: 80ms; background: rgba(95,168,211,0.26); }
+.rate-cell:focus-visible { outline: 2px solid var(--c-fresh-sky); outline-offset: -2px; z-index: 2; }
+.rate-cell.is-weekend { background: rgba(59,130,246,0.06); }
 .rate-cell.is-today-col { background: rgba(95,168,211,0.1); }
 .rate-cell.is-weekend.is-today-col { background: rgba(95,168,211,0.2); }
+.rate-cell--group { cursor: default; background: rgba(238,246,251,0.4); }
+.rate-cell--group:hover { transform: none; box-shadow: none; background: rgba(238,246,251,0.4); }
+
+/* Price outlier highlighting — soft glass glow, not a hard fill */
+.rate-cell--lowest { background: rgba(16,185,129,0.1); color: #0d8f65; font-weight: 700; box-shadow: inset 0 0 0 1px rgba(16,185,129,0.25); }
+.rate-cell--lowest:hover { background: rgba(16,185,129,0.18); }
+.rate-cell--highest { background: rgba(244,63,94,0.08); color: #c22a47; font-weight: 700; box-shadow: inset 0 0 0 1px rgba(244,63,94,0.22); }
+.rate-cell--highest:hover { background: rgba(244,63,94,0.16); }
+
+.rate-cell__value { font-variant-numeric: tabular-nums; }
+.rate-cell__edit-icon {
+  position: absolute; top: 4px; right: 4px; width: 12px; height: 12px;
+  color: var(--c-fresh-sky-600); opacity: 0; transform: scale(0.7);
+  transition: opacity var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
+  pointer-events: none;
+}
+.rate-cell:hover .rate-cell__edit-icon { opacity: 1; transform: scale(1); }
+
+/* Room + Meal Plan group header row (collapsible parent for occupancy rows) */
+.rate-calendar__group-row .row-head--group {
+  display: flex; align-items: center; gap: var(--space-2);
+  cursor: pointer; background: rgba(238,246,251,0.82);
+  min-width: 240px;
+  flex-wrap: wrap;
+}
+.row-head__chevron { width: 15px; height: 15px; color: var(--text-muted); flex-shrink: 0; transition: transform var(--dur-fast) var(--ease-out); }
+.rate-calendar__group-row:hover .row-head--group { background: rgba(202,233,255,0.55); }
+
+.variance-badge {
+  font-size: 10px; font-weight: 650; white-space: nowrap;
+  color: var(--c-yale-blue); background: rgba(255,255,255,0.6);
+  border: 1px solid var(--border-default); border-radius: var(--radius-pill);
+  padding: 3px 9px; margin-left: auto;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Occupancy sub-rows, indented beneath their Room + Meal Plan group */
+.rate-calendar .row-head--occupancy {
+  padding-left: calc(var(--space-6) + 15px);
+  display: flex; flex-direction: column; gap: 0;
+  min-width: 240px;
+  background: rgba(255,255,255,0.7);
+}
+.row-head__occ-label { font-size: var(--fs-xs); font-weight: 650; color: var(--c-yale-blue); }
+.row-head__occ-meta { font-size: 10px; font-weight: 500; color: var(--text-muted); }
+
+/* ---------- Calendar toolbar: date filter + window navigator ---------- */
+.calendar-window-nav { display: flex; align-items: center; gap: var(--space-2); }
+.calendar-window-nav__label { font-size: var(--fs-xs); color: var(--text-secondary); font-weight: 600; white-space: nowrap; font-variant-numeric: tabular-nums; }
+
+/* Month navigation + jump-to-date */
+.calendar-month-nav { display: flex; align-items: center; gap: 6px; }
+.calendar-month-nav__label { font-size: var(--fs-sm); font-weight: 650; color: var(--text-primary); white-space: nowrap; min-width: 130px; text-align: center; }
+.jump-to-date input {
+  padding: 7px 12px; border-radius: var(--radius-md);
+  border: 1px solid var(--border-default); background: var(--bg-card);
+  font-size: var(--fs-xs); font-weight: 580; color: var(--text-secondary);
+  cursor: pointer; transition: all var(--dur-fast) var(--ease-out);
+}
+.jump-to-date input:hover { background: #fff; border-color: var(--border-strong); }
+.jump-to-date input:focus { outline: none; border-color: var(--c-fresh-sky); box-shadow: var(--shadow-glow-sky); background: #fff; }
+
+/* Week-segment quick-scroll switcher */
+.week-segment-switcher { display: flex; flex-wrap: wrap; gap: 6px; margin: calc(var(--space-2) * -1) 0 var(--space-2); }
+.week-segment-switcher__item {
+  padding: 5px 11px; border-radius: var(--radius-pill);
+  border: 1px solid var(--border-subtle); background: rgba(255,255,255,0.5);
+  font-size: 11px; font-weight: 620; color: var(--text-secondary);
+  cursor: pointer; transition: all var(--dur-fast) var(--ease-out);
+}
+.week-segment-switcher__item:hover { background: #fff; border-color: var(--c-fresh-sky); color: var(--c-yale-blue); transform: translateY(-1px); }
+
+/* Price outlier quick-action toggles */
+.outlier-toggle {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 7px 12px; border-radius: var(--radius-pill);
+  border: 1px solid var(--border-default); background: var(--bg-card);
+  font-size: var(--fs-xs); font-weight: 640; color: var(--text-secondary);
+  cursor: pointer; transition: all var(--dur-fast) var(--ease-out);
+}
+.outlier-toggle svg { width: 13px; height: 13px; }
+.outlier-toggle:hover { background: #fff; border-color: var(--border-strong); box-shadow: var(--shadow-sm); }
+.outlier-toggle--low.is-active { background: rgba(16,185,129,0.14); border-color: rgba(16,185,129,0.4); color: #0d8f65; }
+.outlier-toggle--high.is-active { background: rgba(244,63,94,0.12); border-color: rgba(244,63,94,0.35); color: #c22a47; }
+
+.dropdown-select { position: relative; }
+.dropdown-select__menu {
+  position: absolute; left: 0; top: calc(100% + 8px); z-index: 60;
+  min-width: 200px;
+  background: rgba(255,255,255,0.98);
+  backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  padding: var(--space-2);
+}
+.dropdown-select__item {
+  padding: 9px 11px; border-radius: var(--radius-sm);
+  font-size: var(--fs-sm); font-weight: 560; color: var(--text-secondary);
+  cursor: pointer; white-space: nowrap;
+  transition: background var(--dur-fast), color var(--dur-fast);
+}
+.dropdown-select__item:hover { background: var(--bg-chip); color: var(--c-yale-blue); }
+.dropdown-select__item.is-active { background: rgba(95,168,211,0.14); color: var(--c-yale-blue); font-weight: 650; }
 
 /* ---------- Comparison (future module) ---------- */
 .comparison-chart { display: flex; align-items: flex-end; gap: var(--space-4); height: 220px; padding: var(--space-4) var(--space-2) 0; }

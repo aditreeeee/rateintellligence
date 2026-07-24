@@ -67,12 +67,12 @@ export default function PropertyList() {
 
       <section className="card-grid" aria-label="Property list">
         {properties.map((p) => (
-          <article className="card card-hover entity-card" key={p.id}>
+          <Link to={`/properties/${p.id}`} className="card card-hover entity-card entity-card--clickable" key={p.id}>
             <div className="entity-card__top">
               <div className="entity-card__avatar">{p.name.split(" ").map((w) => w[0]).slice(0, 2).join("")}</div>
-              <div style={{ flex: 1 }}>
+              <div style={{ flex: 1, minWidth: 0 }}>
                 <div className="entity-card__title">{p.name}</div>
-                <div className="entity-card__meta">{p.city}, {p.country}</div>
+                <div className="entity-card__meta"><MapPin style={{ width: 11, height: 11 }} /> {p.city}, {p.country}</div>
               </div>
               {p.status === "Active" ? (
                 <span className="badge badge-success pulse">Active</span>
@@ -98,11 +98,25 @@ export default function PropertyList() {
             <div className="entity-card__footer">
               <span className="text-muted" style={{ fontSize: "var(--fs-xs)" }}>Updated {p.updatedAt}</span>
               <div className="entity-card__actions">
-                <Link to={`/properties/${p.id}`} className="icon-btn btn-sm" data-tooltip="View & Edit"><Pencil /></Link>
-                <Link to="/rooms" className="icon-btn btn-sm" data-tooltip="View rooms"><ArrowUpRight /></Link>
+                <Link
+                  to={`/properties/${p.id}`}
+                  className="icon-btn btn-sm"
+                  data-tooltip="View & Edit"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <Pencil />
+                </Link>
+                <Link
+                  to="/rooms"
+                  className="icon-btn btn-sm"
+                  data-tooltip="View rooms"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <ArrowUpRight />
+                </Link>
               </div>
             </div>
-          </article>
+          </Link>
         ))}
       </section>
 

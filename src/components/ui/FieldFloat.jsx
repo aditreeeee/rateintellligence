@@ -1,4 +1,5 @@
-import { ChevronDown, AlertCircle, Check } from "lucide-react";
+import { AlertCircle, Check } from "lucide-react";
+import Select from "./Select";
 
 export function FieldInput({ label, value, onChange, type = "text", required, error, hint, span2, ...rest }) {
   const invalid = !!error;
@@ -28,22 +29,15 @@ export function FieldTextarea({ label, value, onChange, required, span2, ...rest
 }
 
 export function FieldSelect({ label, value, onChange, options, required, error, span2 }) {
-  const invalid = !!error;
   return (
-    <div className={`field field-float ${invalid ? "is-invalid" : ""} ${span2 ? "span-2" : ""}`}>
-      <select className={value ? "has-value" : ""} value={value} onChange={(e) => onChange(e.target.value)} required={required}>
-        <option value="" disabled hidden></option>
-        {options.map((o) => (
-          <option key={o} value={o}>{o}</option>
-        ))}
-      </select>
-      <label>{label}{required ? " *" : ""}</label>
-      <ChevronDown className="select-chevron" />
-      {invalid && (
-        <span className="field-error" style={{ display: "flex" }}>
-          <AlertCircle /> {error}
-        </span>
-      )}
-    </div>
+    <Select
+      className={span2 ? "span-2" : ""}
+      label={label}
+      required={required}
+      error={error}
+      value={value}
+      onChange={onChange}
+      options={options.map((o) => ({ value: o, label: o }))}
+    />
   );
 }

@@ -163,13 +163,17 @@ export default function RoomDetailPage() {
                 <p className="text-muted" style={{ fontSize: "var(--fs-sm)" }}>No rate plans linked to this room yet.</p>
               ) : (
                 ratePlans.map((rp) => {
-                  const meal = masterData.mealPlans.find((m) => m.code === rp.mealPlanCode);
-                  const period = rp.pricingPeriods?.[0];
+                  const mealPlans = rp.mealPlans || [];
+                  const period = mealPlans[0]?.pricingPeriods?.[0];
                   return (
                     <div className="note-card" key={rp.id} style={{ cursor: "pointer" }} onClick={() => navigate(`/rate-plans/${rp.id}`)}>
                       <div className="note-card__top">
-                        <span className="note-card__author">{rp.name || meal?.name || rp.mealPlanCode}</span>
-                        <span className={`rp-mealplan-badge ${rp.mealPlanCode}`}>{rp.mealPlanCode}</span>
+                        <span className="note-card__author">{rp.name}</span>
+                        <div className="flex gap-2">
+                          {mealPlans.map((mp) => (
+                            <span key={mp.mealPlanCode} className={`rp-mealplan-badge ${mp.mealPlanCode}`}>{mp.mealPlanCode}</span>
+                          ))}
+                        </div>
                       </div>
                       <div className="note-card__text">
                         {period ? `${period.effectiveFrom} → ${period.effectiveTo}` : "No pricing period"} · <span className={rp.status === "Active" ? "badge badge-success" : "badge badge-neutral"}>{rp.status}</span>

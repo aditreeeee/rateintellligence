@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import {
-  Fingerprint, Building2, Utensils, Layers, ShieldCheck, CalendarRange, Pencil, Trash2,
+  Fingerprint, Building2, Utensils, ShieldCheck, CalendarRange, Pencil, Trash2,
   BedDouble, StickyNote, Send, Plus, IndianRupee,
 } from "lucide-react";
 import PageHeader from "../../components/ui/PageHeader";
@@ -18,9 +18,15 @@ function findActivePeriod(periods) {
   return periods.find((p) => new Date(p.effectiveFrom) <= today && today <= new Date(p.effectiveTo)) || periods[0];
 }
 
+function computeFinalDisplay(period, occKey) {
+  const base = period.rates[occKey] || 0;
+  const v = Number(period.taxValue) || 0;
+  const taxAmount = period.taxMethod === "Percentage" ? (base * v) / 100 : v;
+  return period.taxType === "Exclusive" ? base + taxAmount : base;
+}
+
 export default function RatePlanDetailPage() {
   const { id } = useParams();
-  const navigate = useNavigate();
   const toast = useToast();
   const { getRatePlanById, getPropertyById, getRoomById, masterData, updateRatePlan, addRatePlanNote } = useData();
 
@@ -39,34 +45,34 @@ export default function RatePlanDetailPage() {
   }
 
   const property = getPropertyById(ratePlan.propertyId);
-  const meal = masterData.mealPlans.find((m) => m.code === ratePlan.mealPlanCode);
   const cxlPolicy = masterData.cancellationPolicies.find((c) => c.id === ratePlan.cancellationPolicyId);
   const linkedRooms = (ratePlan.roomIds || []).map((rid) => getRoomById(rid)).filter(Boolean);
-  const activePeriod = findActivePeriod(ratePlan.pricingPeriods);
+  const mealPlans = ratePlan.mealPlans || [];
 
   function openEditAt(stepKey) {
     setEditStep(stepKey);
     setEditOpen(true);
   }
 
-  function removePeriod(periodId) {
-    const remaining = ratePlan.pricingPeriods.filter((p) => p.id !== periodId);
+  function removePeriod(mealPlanCode, periodId) {
+    const mp = mealPlans.find((m) => m.mealPlanCode === mealPlanCode);
+    const remaining = mp.pricingPeriods.filter((p) => p.id !== periodId);
     if (remaining.length === 0) {
-      toast({ title: "A rate plan needs at least one pricing period", type: "error" });
+      toast({ title: "Each meal plan needs at least one pricing period", type: "error" });
       return;
     }
-    updateRatePlan(ratePlan.id, { pricingPeriods: remaining });
+    updateRatePlan(ratePlan.id, {
+      mealPlans: mealPlans.map((m) => (m.mealPlanCode === mealPlanCode ? { ...m, pricingPeriods: remaining } : m)),
+    });
     toast({ title: "Pricing period removed", type: "info" });
   }
 
   const summary = [
     { label: "Rate Plan ID", value: ratePlan.id, icon: Fingerprint },
     { label: "Property", value: property?.name || "—", icon: Building2 },
-    { label: "Meal Plan", value: ratePlan.mealPlanCode, icon: Utensils },
+    { label: "Meal Plans", value: mealPlans.map((m) => m.mealPlanCode).join(", ") || "—", icon: Utensils },
     { label: "Status", value: ratePlan.status, icon: null },
     { label: "Rooms", value: linkedRooms.length, icon: BedDouble },
-    { label: "Current Pricing", value: activePeriod ? `${fmtDate(activePeriod.effectiveFrom)} – ${fmtDate(activePeriod.effectiveTo)}` : "—", icon: CalendarRange },
-    { label: "Tax", value: activePeriod ? `${activePeriod.taxType} (${activePeriod.taxMethod === "Percentage" ? `${activePeriod.taxValue}%` : fmt(activePeriod.taxValue)})` : "—", icon: null },
     { label: "Cancellation", value: cxlPolicy?.name || "—", icon: ShieldCheck },
   ];
 
@@ -75,7 +81,7 @@ export default function RatePlanDetailPage() {
       <PageHeader
         crumbs={[{ label: "Dashboard", to: "/" }, { label: "Rate Plans", to: "/rate-plans" }, { label: ratePlan.name }]}
         title={ratePlan.name}
-        subtitle={`${property?.name || ""} · ${ratePlan.id}`}
+        subtitle={`${property?.name || ""} · ${ratePlan.id} — a Rate Plan is independent of its Meal Plans, listed below.`}
         actions={<button className="btn btn-primary" onClick={() => openEditAt("overview")}><Pencil /> Edit Rate Plan</button>}
       />
 
@@ -120,24 +126,44 @@ export default function RatePlanDetailPage() {
 
         <section className="card">
           <div className="card__header">
-            <div className="card__title"><CalendarRange style={{ width: 15, height: 15, display: "inline", marginRight: 6 }} />Pricing Periods</div>
-            <button className="manage-inline-btn" onClick={() => openEditAt("pricing")}><Plus /> Manage Pricing</button>
+            <div className="card__title"><Utensils style={{ width: 15, height: 15, display: "inline", marginRight: 6 }} />Meal Plans &amp; Occupancy Pricing</div>
+            <button className="manage-inline-btn" onClick={() => openEditAt("mealplans")}><Pencil /> Manage Meal Plans</button>
           </div>
-          <div className="card__body" style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
-            {ratePlan.pricingPeriods.map((p) => (
-              <div key={p.id}>
-                <div className="pricing-period-summary">
-                  <div className="pricing-period-summary__dates">
-                    <CalendarRange style={{ width: 14, height: 14 }} /> {fmtDate(p.effectiveFrom)} → {fmtDate(p.effectiveTo)}
+          <div className="card__body" style={{ display: "flex", flexDirection: "column", gap: "var(--space-5)" }}>
+            {mealPlans.length === 0 ? (
+              <p className="text-muted" style={{ fontSize: "var(--fs-sm)" }}>No meal plans configured yet.</p>
+            ) : (
+              mealPlans.map((mp) => {
+                const meal = masterData.mealPlans.find((m) => m.code === mp.mealPlanCode);
+                const activePeriod = findActivePeriod(mp.pricingPeriods);
+                return (
+                  <div className="rp-mealplan-block" key={mp.mealPlanCode}>
+                    <div className="rp-mealplan-block__head">
+                      <span className={`rp-mealplan-badge ${mp.mealPlanCode}`}>{mp.mealPlanCode}</span>
+                      <div>
+                        <div className="rp-mealplan-block__title">{meal?.name || mp.mealPlanCode}</div>
+                        <div className="rp-mealplan-block__desc">{meal?.description}</div>
+                      </div>
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-3)" }}>
+                      {mp.pricingPeriods.map((p) => (
+                        <div className="pricing-period-summary" key={p.id}>
+                          <div className="pricing-period-summary__dates">
+                            <CalendarRange style={{ width: 14, height: 14 }} /> {fmtDate(p.effectiveFrom)} → {fmtDate(p.effectiveTo)}
+                          </div>
+                          <span className="badge badge-info">{p.taxType} · {p.taxMethod === "Percentage" ? `${p.taxValue}%` : fmt(p.taxValue)}</span>
+                          <span className={p === activePeriod ? "badge badge-success" : "badge badge-neutral"}>{p === activePeriod ? "Current" : "Scheduled"}</span>
+                          <span className="pricing-period-summary__rate">{fmt(computeFinalDisplay(p, "Double"))} <span className="text-muted" style={{ fontSize: "var(--fs-xs)", fontWeight: 500 }}>/ Double</span></span>
+                          <button className="icon-btn btn-sm" data-tooltip="Edit" onClick={() => openEditAt("pricing")}><Pencil /></button>
+                          <button className="icon-btn btn-sm" data-tooltip="Delete" onClick={() => removePeriod(mp.mealPlanCode, p.id)}><Trash2 /></button>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                  <span className="badge badge-info">{p.taxType} · {p.taxMethod === "Percentage" ? `${p.taxValue}%` : fmt(p.taxValue)}</span>
-                  <span className={p === activePeriod ? "badge badge-success" : "badge badge-neutral"}>{p === activePeriod ? "Current" : "Scheduled"}</span>
-                  <span className="pricing-period-summary__rate">{fmt(computeFinalDisplay(p, "Double"))} <span className="text-muted" style={{ fontSize: "var(--fs-xs)", fontWeight: 500 }}>/ Double</span></span>
-                  <button className="icon-btn btn-sm" data-tooltip="Edit" onClick={() => openEditAt("pricing")}><Pencil /></button>
-                  <button className="icon-btn btn-sm" data-tooltip="Delete" onClick={() => removePeriod(p.id)}><Trash2 /></button>
-                </div>
-              </div>
-            ))}
+                );
+              })
+            )}
+            <button className="btn btn-secondary" style={{ width: "fit-content" }} onClick={() => openEditAt("mealplans")}><Plus /> Add Meal Plan</button>
           </div>
         </section>
 
@@ -188,11 +214,4 @@ export default function RatePlanDetailPage() {
       />
     </>
   );
-}
-
-function computeFinalDisplay(period, occKey) {
-  const base = period.rates[occKey] || 0;
-  const v = Number(period.taxValue) || 0;
-  const taxAmount = period.taxMethod === "Percentage" ? (base * v) / 100 : v;
-  return period.taxType === "Exclusive" ? base + taxAmount : base;
 }

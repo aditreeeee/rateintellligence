@@ -77,7 +77,7 @@ export function DataProvider({ children }) {
     setProperties((prev) => prev.map((p) => ({ ...p, isBenchmark: p.id === id })));
   }, []);
 
-  const addPropertyNote = useCallback((propertyId, text, author = "Aditree Admin", tag = "General") => {
+  const addPropertyNote = useCallback((propertyId, text, author = "Admin", tag = "General") => {
     setProperties((prev) =>
       prev.map((p) =>
         p.id === propertyId
@@ -138,7 +138,7 @@ export function DataProvider({ children }) {
     return copy;
   }, [rooms, company]);
 
-  const addRoomNote = useCallback((roomId, text, author = "Aditree Admin") => {
+  const addRoomNote = useCallback((roomId, text, author = "Admin") => {
     setRooms((prev) =>
       prev.map((r) =>
         r.id === roomId
@@ -179,7 +179,10 @@ export function DataProvider({ children }) {
       name: `${source.name} (Copy)`,
       status: "Draft",
       notes: [],
-      pricingPeriods: source.pricingPeriods.map((pp, i) => ({ ...pp, id: `PP-${newId.slice(3)}-${i + 1}` })),
+      mealPlans: (source.mealPlans || []).map((mp) => ({
+        ...mp,
+        pricingPeriods: mp.pricingPeriods.map((pp, i) => ({ ...pp, id: `PP-${newId.slice(3)}-${mp.mealPlanCode}-${i + 1}` })),
+      })),
       createdBy: company.owner.name,
       createdDate: today,
       modifiedDate: today,
@@ -188,7 +191,7 @@ export function DataProvider({ children }) {
     return copy;
   }, [ratePlans, company]);
 
-  const addRatePlanNote = useCallback((ratePlanId, text, author = "Aditree Admin") => {
+  const addRatePlanNote = useCallback((ratePlanId, text, author = "Admin") => {
     setRatePlans((prev) =>
       prev.map((rp) =>
         rp.id === ratePlanId

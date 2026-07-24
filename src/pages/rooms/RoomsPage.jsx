@@ -7,6 +7,7 @@ import {
 import PageHeader from "../../components/ui/PageHeader";
 import EmptyState from "../../components/ui/EmptyState";
 import Modal from "../../components/ui/Modal";
+import Select from "../../components/ui/Select";
 import RoomWizardModal from "../../components/rooms/RoomWizardModal";
 import { useData } from "../../context/DataContext";
 import { useToast } from "../../context/ToastContext";
@@ -142,16 +143,24 @@ export default function RoomsPage() {
                   style={{ border: "none", background: "transparent", outline: "none", fontSize: "var(--fs-sm)", width: 140 }}
                 />
               </div>
-              <select className="select-pill" value={statusFilter} onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }} style={{ cursor: "pointer" }}>
-                <option value="All">All statuses</option>
-                <option value="Active">Active</option>
-                <option value="Inactive">Inactive</option>
-              </select>
-              <select className="select-pill" value={sortBy} onChange={(e) => setSortBy(e.target.value)} style={{ cursor: "pointer" }}>
-                <option value="displayOrder">Display order</option>
-                <option value="name">Name (A–Z)</option>
-                <option value="maxOccupancy">Max occupancy</option>
-              </select>
+              <Select
+                value={statusFilter}
+                onChange={(v) => { setStatusFilter(v); setPage(1); }}
+                options={[
+                  { value: "All", label: "All statuses" },
+                  { value: "Active", label: "Active" },
+                  { value: "Inactive", label: "Inactive" },
+                ]}
+              />
+              <Select
+                value={sortBy}
+                onChange={setSortBy}
+                options={[
+                  { value: "displayOrder", label: "Display order" },
+                  { value: "name", label: "Name (A–Z)" },
+                  { value: "maxOccupancy", label: "Max occupancy" },
+                ]}
+              />
             </div>
           </div>
 
@@ -179,7 +188,7 @@ export default function RoomsPage() {
           ) : (
             <>
               <div className="table-wrap card">
-                <table className="data-table">
+                <table className="data-table is-compact">
                   <thead>
                     <tr>
                       <th style={{ width: 32 }}>

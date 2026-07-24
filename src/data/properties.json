@@ -36,7 +36,7 @@
     "description": "Beachside boutique suites with private balconies and an infinity pool overlooking the Arabian Sea.",
     "amenities": ["Free WiFi", "Beach Access", "Swimming Pool", "Restaurant", "Bar", "Pet Friendly"],
     "notes": [
-      { "id": "NOTE-3", "author": "Aditree Admin", "date": "2026-07-15", "tag": "Market", "text": "Goa peak season pricing window opens November — align CP rate plans ahead of time." }
+      { "id": "NOTE-3", "author": "Admin", "date": "2026-07-15", "tag": "Market", "text": "Goa peak season pricing window opens November — align CP rate plans ahead of time." }
     ],
     "updatedAt": "2026-07-15"
   },

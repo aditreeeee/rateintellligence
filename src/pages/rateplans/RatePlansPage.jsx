@@ -1,12 +1,13 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import {
-  Building2, Plus, Pencil, Trash2, Copy, Archive, ArchiveRestore, Eye,
+  Building2, BedDouble, Plus, Pencil, Trash2, Copy, Archive, ArchiveRestore, Eye,
   Search, AlertTriangle, ChevronLeft, ChevronRight,
 } from "lucide-react";
 import PageHeader from "../../components/ui/PageHeader";
 import EmptyState from "../../components/ui/EmptyState";
 import Modal from "../../components/ui/Modal";
+import Select from "../../components/ui/Select";
 import RatePlanWizardModal from "../../components/rateplans/RatePlanWizardModal";
 import { useData } from "../../context/DataContext";
 import { useToast } from "../../context/ToastContext";
@@ -14,19 +15,29 @@ import { useToast } from "../../context/ToastContext";
 const PAGE_SIZE = 6;
 const fmt = (v) => new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 }).format(v || 0);
 
-function activeRate(rp) {
+function activePeriodOf(pricingPeriods) {
   const today = new Date();
-  const period = rp.pricingPeriods.find((p) => new Date(p.effectiveFrom) <= today && today <= new Date(p.effectiveTo)) || rp.pricingPeriods[0];
-  return period?.rates?.Double || 0;
+  return pricingPeriods.find((p) => new Date(p.effectiveFrom) <= today && today <= new Date(p.effectiveTo)) || pricingPeriods[0];
+}
+
+// Lowest current Double rate across all meal plans bundled in this rate plan —
+// used for sorting/at-a-glance display; the detail page shows each meal plan's
+// own rate individually.
+function activeRate(rp) {
+  const rates = (rp.mealPlans || [])
+    .map((mp) => activePeriodOf(mp.pricingPeriods)?.rates?.Double || 0)
+    .filter((v) => v > 0);
+  return rates.length ? Math.min(...rates) : 0;
 }
 
 export default function RatePlansPage() {
-  const { properties, getRatePlansByProperty, getRoomsByProperty, updateRatePlan, deleteRatePlan, duplicateRatePlan } = useData();
+  const { properties, getRatePlansByProperty, getRoomsByProperty, getRoomById, updateRatePlan, deleteRatePlan, duplicateRatePlan } = useData();
   const toast = useToast();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
   const [propertyId, setPropertyId] = useState(searchParams.get("propertyId") || properties[0]?.id);
+  const [roomId, setRoomId] = useState(searchParams.get("roomId") || null);
   const [query, setQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
   const [sortBy, setSortBy] = useState("name");
@@ -38,12 +49,22 @@ export default function RatePlansPage() {
   const [activePlan, setActivePlan] = useState(null);
   const [confirmDelete, setConfirmDelete] = useState(null);
 
+  const propertyRooms = useMemo(() => getRoomsByProperty(propertyId), [getRoomsByProperty, propertyId]);
+
+  // Room is required before rate plans are shown, per the Property → Room →
+  // Rate Plan hierarchy. Default to the first room whenever the property
+  // (or its room list) changes and the current selection no longer applies.
+  useEffect(() => {
+    if (!propertyRooms.some((r) => r.id === roomId)) {
+      setRoomId(propertyRooms[0]?.id || null);
+    }
+  }, [propertyRooms, roomId]);
+
   const allPlans = useMemo(() => getRatePlansByProperty(propertyId), [getRatePlansByProperty, propertyId]);
-  const roomFilter = searchParams.get("roomId");
 
   const filtered = useMemo(() => {
     let list = allPlans.filter((rp) => rp.name.toLowerCase().includes(query.trim().toLowerCase()));
-    if (roomFilter) list = list.filter((rp) => (rp.roomIds || []).includes(roomFilter));
+    if (roomId) list = list.filter((rp) => (rp.roomIds || []).includes(roomId));
     if (statusFilter !== "All") list = list.filter((rp) => rp.status === statusFilter);
     list = [...list].sort((a, b) => {
       if (sortBy === "name") return a.name.localeCompare(b.name);
@@ -51,13 +72,20 @@ export default function RatePlansPage() {
       return 0;
     });
     return list;
-  }, [allPlans, query, statusFilter, sortBy, roomFilter]);
+  }, [allPlans, query, statusFilter, sortBy, roomId]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const pagePlans = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   function selectProperty(id) {
     setPropertyId(id);
+    setRoomId(null);
+    setSelectedIds([]);
+    setPage(1);
+  }
+
+  function selectRoom(id) {
+    setRoomId(id);
     setSelectedIds([]);
     setPage(1);
   }
@@ -108,8 +136,8 @@ export default function RatePlansPage() {
       <PageHeader
         crumbs={[{ label: "Dashboard", to: "/" }, { label: "Rate Plans" }]}
         title="Rate Plan Management"
-        subtitle="Select a property on the left, then manage its rate plans, occupancy pricing and cancellation policies."
-        actions={<button className="btn btn-primary" onClick={openCreate} disabled={!propertyId}><Plus /> Add Rate Plan</button>}
+        subtitle="Select a Property, then a Room on the left — its rate plans, occupancy pricing and cancellation policies load automatically."
+        actions={<button className="btn btn-primary" onClick={openCreate} disabled={!roomId}><Plus /> Add Rate Plan</button>}
       />
 
       <div className="module-layout">
@@ -126,6 +154,22 @@ export default function RatePlansPage() {
               ))}
             </div>
           </div>
+          <div className="card filter-panel__section">
+            <div className="filter-panel__label"><BedDouble /> Room</div>
+            {propertyRooms.length === 0 ? (
+              <div className="filter-empty">No rooms configured for this property yet.</div>
+            ) : (
+              <div className="filter-option-list">
+                {propertyRooms.map((r) => (
+                  <div key={r.id} className={`filter-option ${r.id === roomId ? "is-active" : ""}`} onClick={() => selectRoom(r.id)}>
+                    <span className="filter-option__avatar">{r.name.split(" ").map((w) => w[0]).slice(0, 2).join("")}</span>
+                    <span><div>{r.name}</div><div className="filter-option__meta">{r.id}</div></span>
+                    <span className="badge badge-neutral">{allPlans.filter((rp) => (rp.roomIds || []).includes(r.id)).length}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </aside>
 
         <div>
@@ -140,17 +184,25 @@ export default function RatePlansPage() {
                   style={{ border: "none", background: "transparent", outline: "none", fontSize: "var(--fs-sm)", width: 140 }}
                 />
               </div>
-              <select className="select-pill" value={statusFilter} onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }} style={{ cursor: "pointer" }}>
-                <option value="All">All statuses</option>
-                <option value="Draft">Draft</option>
-                <option value="Active">Active</option>
-                <option value="Inactive">Inactive</option>
-                <option value="Archived">Archived</option>
-              </select>
-              <select className="select-pill" value={sortBy} onChange={(e) => setSortBy(e.target.value)} style={{ cursor: "pointer" }}>
-                <option value="name">Name (A–Z)</option>
-                <option value="rate">Double rate (high–low)</option>
-              </select>
+              <Select
+                value={statusFilter}
+                onChange={(v) => { setStatusFilter(v); setPage(1); }}
+                options={[
+                  { value: "All", label: "All statuses" },
+                  { value: "Draft", label: "Draft" },
+                  { value: "Active", label: "Active" },
+                  { value: "Inactive", label: "Inactive" },
+                  { value: "Archived", label: "Archived" },
+                ]}
+              />
+              <Select
+                value={sortBy}
+                onChange={setSortBy}
+                options={[
+                  { value: "name", label: "Name (A–Z)" },
+                  { value: "rate", label: "Double rate (high–low)" },
+                ]}
+              />
             </div>
           </div>
 
@@ -165,41 +217,55 @@ export default function RatePlansPage() {
           )}
 
           {!propertyId ? (
-            <div className="card"><EmptyState icon={Building2} title="Select a property" desc="Choose a property from the left panel to view its rate plans." /></div>
+            <div className="card"><EmptyState icon={Building2} title="Select a property" desc="Choose a property from the left panel to view its rooms and rate plans." /></div>
+          ) : propertyRooms.length === 0 ? (
+            <div className="card"><EmptyState icon={BedDouble} title="No rooms configured" desc="Add rooms to this property before managing rate plans." /></div>
+          ) : !roomId ? (
+            <div className="card"><EmptyState icon={BedDouble} title="Select a room" desc="Choose a room from the left panel to view its rate plans." /></div>
           ) : filtered.length === 0 ? (
             <div className="card">
               <EmptyState
                 icon={Building2}
                 title={allPlans.length === 0 ? `No rate plans yet for ${activeProperty?.name}` : "No rate plans match your filters"}
-                desc={allPlans.length === 0 ? "Attach a meal plan, room assignment and pricing to get started." : "Try adjusting your search or status filter."}
-                action={allPlans.length === 0 && getRoomsByProperty(propertyId).length > 0 && <button className="btn btn-primary" onClick={openCreate}><Plus /> Add Rate Plan</button>}
+                desc={allPlans.length === 0 ? "Attach a meal plan, room assignment and pricing to get started." : "Try adjusting your search, room or status filter."}
+                action={<button className="btn btn-primary" onClick={openCreate}><Plus /> Add Rate Plan</button>}
               />
-              {allPlans.length === 0 && getRoomsByProperty(propertyId).length === 0 && (
-                <p className="text-muted" style={{ textAlign: "center", fontSize: "var(--fs-xs)", paddingBottom: "var(--space-6)" }}>Add rooms to this property first.</p>
-              )}
             </div>
           ) : (
             <>
               <div className="table-wrap card">
-                <table className="data-table">
+                <table className="data-table is-compact">
                   <thead>
                     <tr>
                       <th style={{ width: 32 }}>
                         <input type="checkbox" checked={pagePlans.every((r) => selectedIds.includes(r.id))} onChange={toggleSelectAllOnPage} />
                       </th>
-                      <th>Rate Plan</th><th>Meal Plan</th><th>Rooms</th><th>Current Rate (Double)</th><th>Status</th><th></th>
+                      <th>Rate Plan</th><th>Room</th><th>Meal Plans</th><th>Current Rate (from, Double)</th><th>Status</th><th></th>
                     </tr>
                   </thead>
                   <tbody>
-                    {pagePlans.map((rp) => (
+                    {pagePlans.map((rp) => {
+                      const linkedRooms = (rp.roomIds || []).map((id) => getRoomById(id)).filter(Boolean);
+                      return (
                       <tr key={rp.id}>
                         <td><input type="checkbox" checked={selectedIds.includes(rp.id)} onChange={() => toggleSelect(rp.id)} /></td>
                         <td style={{ cursor: "pointer" }} onClick={() => navigate(`/rate-plans/${rp.id}`)}>
                           <div className="cell-strong">{rp.name}</div>
                           <div className="cell-muted" style={{ fontSize: "var(--fs-xs)" }}>{rp.id}</div>
                         </td>
-                        <td><span className={`rp-mealplan-badge ${rp.mealPlanCode}`}>{rp.mealPlanCode}</span></td>
-                        <td>{(rp.roomIds || []).length}</td>
+                        <td>
+                          <div className="cell-strong">{getRoomById(roomId)?.name || linkedRooms[0]?.name || "—"}</div>
+                          {linkedRooms.length > 1 && (
+                            <div className="cell-muted" style={{ fontSize: "var(--fs-xs)" }}>+{linkedRooms.length - 1} more room{linkedRooms.length - 1 > 1 ? "s" : ""}</div>
+                          )}
+                        </td>
+                        <td>
+                          <div className="flex gap-2" style={{ flexWrap: "wrap" }}>
+                            {(rp.mealPlans || []).map((mp) => (
+                              <span key={mp.mealPlanCode} className={`rp-mealplan-badge ${mp.mealPlanCode}`}>{mp.mealPlanCode}</span>
+                            ))}
+                          </div>
+                        </td>
                         <td className="cell-strong">{fmt(activeRate(rp))}</td>
                         <td>
                           <span className={`badge ${rp.status === "Active" ? "badge-success" : rp.status === "Draft" ? "badge-warning" : "badge-neutral"}`}>{rp.status}</span>
@@ -216,7 +282,8 @@ export default function RatePlansPage() {
                           </div>
                         </td>
                       </tr>
-                    ))}
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>

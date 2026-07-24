@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import {
   LayoutGrid, BedDouble, ShieldCheck, StickyNote, Search,
-  Check, X, AlertCircle, CheckCircle2, Wand2, Settings2, Send, Plus, Trash2, IndianRupee,
+  Check, X, AlertCircle, CheckCircle2, Wand2, Settings2, Send, Plus, Trash2, IndianRupee, Utensils,
 } from "lucide-react";
 import Modal from "../ui/Modal";
-import { FieldInput, FieldTextarea } from "../ui/FieldFloat";
+import { FieldInput, FieldTextarea, FieldSelect } from "../ui/FieldFloat";
 import ManagedSelectField from "../config/ManagedSelectField";
 import ManageListModal from "../config/ManageListModal";
 import { useData } from "../../context/DataContext";
@@ -13,7 +13,8 @@ import { useToast } from "../../context/ToastContext";
 const STEPS = [
   { key: "overview", label: "Overview", icon: LayoutGrid },
   { key: "rooms", label: "Room Assignment", icon: BedDouble },
-  { key: "pricing", label: "Pricing", icon: IndianRupee },
+  { key: "mealplans", label: "Meal Plans", icon: Utensils },
+  { key: "pricing", label: "Occupancy Pricing", icon: IndianRupee },
   { key: "cancellation", label: "Cancellation Policy", icon: ShieldCheck },
   { key: "notes", label: "Notes", icon: StickyNote },
 ];
@@ -58,9 +59,12 @@ function emptyPeriod(idx) {
 
 function emptyForm() {
   return {
-    name: "", mealPlanCode: "", description: "", status: "Draft",
+    name: "", description: "", status: "Draft",
     roomIds: [],
-    pricingPeriods: [emptyPeriod(0)],
+    // Rate Plan → Meal Plan(s) → Occupancy pricing. Each selected meal plan
+    // owns its own independent pricing periods — a Rate Plan is not a Meal Plan.
+    mealPlanCodes: [],
+    mealPlanPricing: {},
     cancellationPolicyId: "", partialRefundEnabled: false, refundType: "Percentage", refundValue: 0,
     notes: [],
   };
@@ -77,6 +81,7 @@ export default function RatePlanWizardModal({ open, onClose, mode = "create", pr
   const [noteDraft, setNoteDraft] = useState("");
   const [manageTemplatesOpen, setManageTemplatesOpen] = useState(false);
   const [nameTouched, setNameTouched] = useState(false);
+  const [activeMealTab, setActiveMealTab] = useState(null);
 
   const propertyRooms = useMemo(() => getRoomsByProperty(propertyId), [getRoomsByProperty, propertyId]);
 
@@ -87,19 +92,42 @@ export default function RatePlanWizardModal({ open, onClose, mode = "create", pr
     setNoteDraft("");
     setRoomSearch("");
     if (isEdit && ratePlan) {
-      setForm({ ...emptyForm(), ...ratePlan });
+      const mealPlanCodes = (ratePlan.mealPlans || []).map((mp) => mp.mealPlanCode);
+      const mealPlanPricing = Object.fromEntries((ratePlan.mealPlans || []).map((mp) => [mp.mealPlanCode, mp.pricingPeriods]));
+      setForm({ ...emptyForm(), ...ratePlan, mealPlanCodes, mealPlanPricing });
+      setActiveMealTab(mealPlanCodes[0] || null);
     } else {
       setForm(emptyForm());
+      setActiveMealTab(null);
     }
   }, [open, isEdit, ratePlan, initialStep]);
 
   const set = (key) => (val) => setForm((f) => ({ ...f, [key]: val }));
 
   const nameConflict = form.name.trim() && isRatePlanNameTaken(propertyId, form.name, isEdit ? ratePlan?.id : null);
-  const canSave = form.name.trim().length > 1 && !nameConflict && form.mealPlanCode && form.roomIds.length > 0;
+  const canSave = form.name.trim().length > 1 && !nameConflict && form.mealPlanCodes.length > 0 && form.roomIds.length > 0;
 
   function applyTemplate(t) {
-    setForm((f) => ({ ...f, ...t.preset }));
+    setForm((f) => {
+      const code = t.preset.mealPlanCode;
+      const next = { ...f, cancellationPolicyId: t.preset.cancellationPolicyId };
+      if (code && !next.mealPlanCodes.includes(code)) {
+        next.mealPlanCodes = [...next.mealPlanCodes, code];
+      }
+      if (code) {
+        next.mealPlanPricing = {
+          ...next.mealPlanPricing,
+          [code]: (next.mealPlanPricing[code] || [emptyPeriod(0)]).map((p) => ({
+            ...p,
+            taxType: t.preset.taxType,
+            taxMethod: t.preset.taxMethod,
+            taxValue: t.preset.taxValue,
+          })),
+        };
+        setActiveMealTab(code);
+      }
+      return next;
+    });
     toast({ title: `Applied "${t.name}"`, message: "Meal plan, tax and cancellation policy were pre-filled.", type: "success" });
   }
 
@@ -109,36 +137,71 @@ export default function RatePlanWizardModal({ open, onClose, mode = "create", pr
   function selectAllRooms() { setForm((f) => ({ ...f, roomIds: propertyRooms.map((r) => r.id) })); }
   function clearRooms() { setForm((f) => ({ ...f, roomIds: [] })); }
 
-  function updatePeriod(idx, patch) {
-    setForm((f) => ({ ...f, pricingPeriods: f.pricingPeriods.map((p, i) => (i === idx ? { ...p, ...patch } : p)) }));
+  function toggleMealPlan(code) {
+    const isSelected = form.mealPlanCodes.includes(code);
+    setForm((f) => {
+      const mealPlanCodes = isSelected ? f.mealPlanCodes.filter((c) => c !== code) : [...f.mealPlanCodes, code];
+      const mealPlanPricing = { ...f.mealPlanPricing };
+      if (isSelected) {
+        delete mealPlanPricing[code];
+      } else if (!mealPlanPricing[code]) {
+        mealPlanPricing[code] = [emptyPeriod(0)];
+      }
+      return { ...f, mealPlanCodes, mealPlanPricing };
+    });
+    setActiveMealTab((prev) => {
+      if (isSelected) {
+        const remaining = form.mealPlanCodes.filter((c) => c !== code);
+        return prev === code ? remaining[0] || null : prev;
+      }
+      return code;
+    });
   }
-  function updatePeriodRate(idx, occKey, value) {
+
+  function updatePeriod(code, idx, patch) {
     setForm((f) => ({
       ...f,
-      pricingPeriods: f.pricingPeriods.map((p, i) => (i === idx ? { ...p, rates: { ...p.rates, [occKey]: Number(value) || 0 } } : p)),
+      mealPlanPricing: {
+        ...f.mealPlanPricing,
+        [code]: f.mealPlanPricing[code].map((p, i) => (i === idx ? { ...p, ...patch } : p)),
+      },
     }));
   }
-  function addPeriod() {
-    setForm((f) => ({ ...f, pricingPeriods: [...f.pricingPeriods, emptyPeriod(f.pricingPeriods.length)] }));
+  function updatePeriodRate(code, idx, occKey, value) {
+    setForm((f) => ({
+      ...f,
+      mealPlanPricing: {
+        ...f.mealPlanPricing,
+        [code]: f.mealPlanPricing[code].map((p, i) => (i === idx ? { ...p, rates: { ...p.rates, [occKey]: Number(value) || 0 } } : p)),
+      },
+    }));
   }
-  function removePeriod(idx) {
-    setForm((f) => ({ ...f, pricingPeriods: f.pricingPeriods.filter((_, i) => i !== idx) }));
+  function addPeriod(code) {
+    setForm((f) => ({
+      ...f,
+      mealPlanPricing: { ...f.mealPlanPricing, [code]: [...f.mealPlanPricing[code], emptyPeriod(f.mealPlanPricing[code].length)] },
+    }));
+  }
+  function removePeriod(code, idx) {
+    setForm((f) => ({
+      ...f,
+      mealPlanPricing: { ...f.mealPlanPricing, [code]: f.mealPlanPricing[code].filter((_, i) => i !== idx) },
+    }));
   }
 
   function handleSave() {
     if (!form.name.trim()) { toast({ title: "Rate plan name is required", type: "error" }); setStep("overview"); return; }
     if (nameConflict) { toast({ title: "Rate plan name already exists for this property", type: "error" }); setStep("overview"); return; }
-    if (!form.mealPlanCode) { toast({ title: "Meal plan is required", type: "error" }); setStep("overview"); return; }
     if (form.roomIds.length === 0) { toast({ title: "Select at least one room", type: "error" }); setStep("rooms"); return; }
+    if (form.mealPlanCodes.length === 0) { toast({ title: "Select at least one meal plan", type: "error" }); setStep("mealplans"); return; }
 
     const payload = {
       propertyId,
       name: form.name.trim(),
-      mealPlanCode: form.mealPlanCode,
       description: form.description,
       status: form.status,
       roomIds: form.roomIds,
-      pricingPeriods: form.pricingPeriods,
+      mealPlans: form.mealPlanCodes.map((code) => ({ mealPlanCode: code, pricingPeriods: form.mealPlanPricing[code] })),
       cancellationPolicyId: form.cancellationPolicyId,
       partialRefundEnabled: form.partialRefundEnabled,
       refundType: form.refundType,
@@ -150,7 +213,7 @@ export default function RatePlanWizardModal({ open, onClose, mode = "create", pr
       toast({ title: "Rate plan updated", message: `${form.name} saved successfully.`, type: "success" });
       onSaved?.(ratePlan.id);
     } else {
-      const record = createRatePlan({ ...payload, notes: noteDraft.trim() ? [{ id: `NOTE-${Date.now()}`, author: "Aditree Admin", date: new Date().toISOString().slice(0, 10), text: noteDraft.trim() }] : [] });
+      const record = createRatePlan({ ...payload, notes: noteDraft.trim() ? [{ id: `NOTE-${Date.now()}`, author: "Admin", date: new Date().toISOString().slice(0, 10), text: noteDraft.trim() }] : [] });
       toast({ title: "Rate plan created", message: `${form.name} added successfully.`, type: "success" });
       onSaved?.(record.id);
     }
@@ -159,6 +222,8 @@ export default function RatePlanWizardModal({ open, onClose, mode = "create", pr
 
   const stepIndex = STEPS.findIndex((s) => s.key === step);
   const filteredRooms = propertyRooms.filter((r) => r.name.toLowerCase().includes(roomSearch.trim().toLowerCase()));
+  const activeMealPlans = masterData.mealPlans.filter((m) => m.status === "Active");
+  const activePeriodsForTab = activeMealTab ? form.mealPlanPricing[activeMealTab] || [] : [];
 
   return (
     <Modal
@@ -202,7 +267,13 @@ export default function RatePlanWizardModal({ open, onClose, mode = "create", pr
 
               <div className="property-id-chip locked" style={{ width: "fit-content" }}>{propertyName}</div>
 
-              <FieldInput label="Rate Plan Name" value={form.name} onChange={(v) => { set("name")(v); setNameTouched(true); }} required />
+              <FieldInput
+                label="Rate Plan Name"
+                value={form.name}
+                onChange={(v) => { set("name")(v); setNameTouched(true); }}
+                required
+                hint="Independent of any meal plan — e.g. Best Flexible Rate, Corporate Rate, Non-Refundable."
+              />
               {nameTouched && form.name.trim() && (
                 <div className={`uniqueness-hint ${nameConflict ? "conflict" : "ok"}`}>
                   {nameConflict ? <AlertCircle /> : <CheckCircle2 />}
@@ -210,24 +281,9 @@ export default function RatePlanWizardModal({ open, onClose, mode = "create", pr
                 </div>
               )}
 
-              <ManagedSelectField
-                listKey="mealPlans"
-                label="Meal Plan"
-                required
-                icon={Settings2}
-                manageLabel="Manage Meal Plans"
-                value={masterData.mealPlans.find((m) => m.code === form.mealPlanCode)?.id || ""}
-                onChange={(id) => set("mealPlanCode")(masterData.mealPlans.find((m) => m.id === id)?.code || "")}
-              />
-
               <FieldTextarea label="Description" value={form.description} onChange={set("description")} />
 
-              <div className="field field-float">
-                <select className={form.status ? "has-value" : ""} value={form.status} onChange={(e) => set("status")(e.target.value)}>
-                  {STATUS_OPTIONS.map((s) => <option key={s}>{s}</option>)}
-                </select>
-                <label>Status</label>
-              </div>
+              <FieldSelect label="Status" value={form.status} onChange={set("status")} options={STATUS_OPTIONS} />
             </div>
           )}
 
@@ -259,63 +315,102 @@ export default function RatePlanWizardModal({ open, onClose, mode = "create", pr
             </div>
           )}
 
+          {step === "mealplans" && (
+            <div className="form-stack">
+              <p className="field-hint" style={{ marginTop: 0 }}>
+                A Rate Plan can bundle one or more Meal Plans. Each Meal Plan below gets its own occupancy pricing and validity periods on the next step.
+              </p>
+              <div className="filter-panel__label"><Utensils /> Meal Plans</div>
+              <div className="chip-multiselect__grid">
+                {activeMealPlans.map((m) => (
+                  <div
+                    key={m.code}
+                    className={`chip-tile ${form.mealPlanCodes.includes(m.code) ? "is-active" : ""}`}
+                    onClick={() => toggleMealPlan(m.code)}
+                  >
+                    <span className={`rp-mealplan-badge ${m.code}`} style={{ marginRight: 8 }}>{m.code}</span>
+                    {m.name}
+                  </div>
+                ))}
+              </div>
+              {form.mealPlanCodes.length === 0 && (
+                <div className="filter-empty">Select at least one meal plan to configure pricing.</div>
+              )}
+            </div>
+          )}
+
           {step === "pricing" && (
             <div className="form-stack">
-              {form.pricingPeriods.map((period, idx) => (
-                <div className="pricing-period-card" key={period.id}>
-                  <div className="pricing-period-card__head">
-                    <div className="form-grid cols-2">
-                      <FieldInput label="Effective From" type="date" value={period.effectiveFrom} onChange={(v) => updatePeriod(idx, { effectiveFrom: v })} />
-                      <FieldInput label="Effective To" type="date" value={period.effectiveTo} onChange={(v) => updatePeriod(idx, { effectiveTo: v })} />
-                    </div>
-                    {form.pricingPeriods.length > 1 && (
-                      <button type="button" className="icon-btn btn-sm" data-tooltip="Remove period" onClick={() => removePeriod(idx)}><Trash2 /></button>
-                    )}
+              {form.mealPlanCodes.length === 0 ? (
+                <div className="filter-empty">Select meal plans on the previous step before configuring pricing.</div>
+              ) : (
+                <>
+                  <div className="tabs" role="tablist" aria-label="Meal plan pricing tabs">
+                    {form.mealPlanCodes.map((code) => (
+                      <div key={code} className={`tab ${activeMealTab === code ? "is-active" : ""}`} onClick={() => setActiveMealTab(code)}>
+                        <span className={`rp-mealplan-badge ${code}`} style={{ marginRight: 6 }}>{code}</span>
+                        {masterData.mealPlans.find((m) => m.code === code)?.name}
+                      </div>
+                    ))}
                   </div>
 
-                  <div className="form-grid cols-3" style={{ marginTop: "var(--space-4)" }}>
-                    <div className="field field-float">
-                      <select className="has-value" value={period.taxType} onChange={(e) => updatePeriod(idx, { taxType: e.target.value })}>
-                        <option>Inclusive</option>
-                        <option>Exclusive</option>
-                      </select>
-                      <label>Tax Type</label>
-                    </div>
-                    <div className="field field-float">
-                      <select className="has-value" value={period.taxMethod} onChange={(e) => updatePeriod(idx, { taxMethod: e.target.value })}>
-                        <option>Percentage</option>
-                        <option>Fixed Amount</option>
-                      </select>
-                      <label>Tax Method</label>
-                    </div>
-                    <FieldInput label={period.taxMethod === "Percentage" ? "Tax Value (%)" : "Tax Value (₹)"} type="number" value={period.taxValue} onChange={(v) => updatePeriod(idx, { taxValue: v })} />
-                  </div>
-
-                  <div className="pricing-grid" style={{ marginTop: "var(--space-5)" }}>
-                    <div className="pricing-grid__row pricing-grid__row--head">
-                      <span>Occupancy</span><span>Base Rate (₹)</span><span>Tax</span><span>Final Rate</span>
-                    </div>
-                    {OCCUPANCY_ROWS.map((occ) => {
-                      const base = period.rates[occ.key] || 0;
-                      const final = computeFinal(base, period.taxType, period.taxMethod, period.taxValue);
-                      return (
-                        <div className="pricing-grid__row" key={occ.key}>
-                          <span className="pricing-grid__label">{occ.label}</span>
-                          <input
-                            type="number"
-                            className="pricing-grid__input"
-                            value={base}
-                            onChange={(e) => updatePeriodRate(idx, occ.key, e.target.value)}
-                          />
-                          <span className="cell-muted">{period.taxType === "Exclusive" ? `+ ${fmt(final - base)}` : "Included"}</span>
-                          <span className="pricing-grid__final">{fmt(final)}</span>
+                  {activeMealTab && activePeriodsForTab.map((period, idx) => (
+                    <div className="pricing-period-card" key={period.id}>
+                      <div className="pricing-period-card__head">
+                        <div className="form-grid cols-2">
+                          <FieldInput label="Effective From" type="date" value={period.effectiveFrom} onChange={(v) => updatePeriod(activeMealTab, idx, { effectiveFrom: v })} />
+                          <FieldInput label="Effective To" type="date" value={period.effectiveTo} onChange={(v) => updatePeriod(activeMealTab, idx, { effectiveTo: v })} />
                         </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              ))}
-              <button type="button" className="btn btn-secondary" onClick={addPeriod}><Plus /> Add Another Pricing Period</button>
+                        {activePeriodsForTab.length > 1 && (
+                          <button type="button" className="icon-btn btn-sm" data-tooltip="Remove period" onClick={() => removePeriod(activeMealTab, idx)}><Trash2 /></button>
+                        )}
+                      </div>
+
+                      <div className="form-grid cols-3" style={{ marginTop: "var(--space-4)" }}>
+                        <FieldSelect
+                          label="Tax Type"
+                          value={period.taxType}
+                          onChange={(v) => updatePeriod(activeMealTab, idx, { taxType: v })}
+                          options={["Inclusive", "Exclusive"]}
+                        />
+                        <FieldSelect
+                          label="Tax Method"
+                          value={period.taxMethod}
+                          onChange={(v) => updatePeriod(activeMealTab, idx, { taxMethod: v })}
+                          options={["Percentage", "Fixed Amount"]}
+                        />
+                        <FieldInput label={period.taxMethod === "Percentage" ? "Tax Value (%)" : "Tax Value (₹)"} type="number" value={period.taxValue} onChange={(v) => updatePeriod(activeMealTab, idx, { taxValue: v })} />
+                      </div>
+
+                      <div className="pricing-grid" style={{ marginTop: "var(--space-5)" }}>
+                        <div className="pricing-grid__row pricing-grid__row--head">
+                          <span>Occupancy</span><span>Base Rate (₹)</span><span>Tax</span><span>Final Rate</span>
+                        </div>
+                        {OCCUPANCY_ROWS.map((occ) => {
+                          const base = period.rates[occ.key] || 0;
+                          const final = computeFinal(base, period.taxType, period.taxMethod, period.taxValue);
+                          return (
+                            <div className="pricing-grid__row" key={occ.key}>
+                              <span className="pricing-grid__label">{occ.label}</span>
+                              <input
+                                type="number"
+                                className="pricing-grid__input"
+                                value={base}
+                                onChange={(e) => updatePeriodRate(activeMealTab, idx, occ.key, e.target.value)}
+                              />
+                              <span className="cell-muted">{period.taxType === "Exclusive" ? `+ ${fmt(final - base)}` : "Included"}</span>
+                              <span className="pricing-grid__final">{fmt(final)}</span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ))}
+                  {activeMealTab && (
+                    <button type="button" className="btn btn-secondary" onClick={() => addPeriod(activeMealTab)}><Plus /> Add Another Pricing Period</button>
+                  )}
+                </>
+              )}
             </div>
           )}
 
@@ -337,13 +432,7 @@ export default function RatePlanWizardModal({ open, onClose, mode = "create", pr
               </div>
               {form.partialRefundEnabled && (
                 <div className="form-grid cols-2">
-                  <div className="field field-float">
-                    <select className="has-value" value={form.refundType} onChange={(e) => set("refundType")(e.target.value)}>
-                      <option>Percentage</option>
-                      <option>Amount</option>
-                    </select>
-                    <label>Refund Type</label>
-                  </div>
+                  <FieldSelect label="Refund Type" value={form.refundType} onChange={set("refundType")} options={["Percentage", "Amount"]} />
                   <FieldInput label={form.refundType === "Percentage" ? "Refund Percentage (%)" : "Refund Amount (₹)"} type="number" value={form.refundValue} onChange={set("refundValue")} />
                 </div>
               )}

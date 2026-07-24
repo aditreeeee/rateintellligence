@@ -1,104 +1,104 @@
 {
   "amenities": [
-    { "id": "AM-001", "name": "Free WiFi", "description": "Complimentary high-speed internet access", "status": "Active", "createdBy": "Aditree Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
-    { "id": "AM-002", "name": "Swimming Pool", "description": "", "status": "Active", "createdBy": "Aditree Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
-    { "id": "AM-003", "name": "Spa", "description": "", "status": "Active", "createdBy": "Aditree Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
-    { "id": "AM-004", "name": "Gym", "description": "", "status": "Active", "createdBy": "Aditree Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
-    { "id": "AM-005", "name": "Airport Shuttle", "description": "", "status": "Active", "createdBy": "Aditree Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
-    { "id": "AM-006", "name": "Business Center", "description": "", "status": "Active", "createdBy": "Aditree Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
-    { "id": "AM-007", "name": "Restaurant", "description": "", "status": "Active", "createdBy": "Aditree Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
-    { "id": "AM-008", "name": "Bar", "description": "", "status": "Active", "createdBy": "Aditree Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
-    { "id": "AM-009", "name": "Pet Friendly", "description": "", "status": "Active", "createdBy": "Aditree Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
-    { "id": "AM-010", "name": "Valet Parking", "description": "", "status": "Active", "createdBy": "Aditree Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
-    { "id": "AM-011", "name": "Balcony", "description": "", "status": "Active", "createdBy": "Aditree Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
-    { "id": "AM-012", "name": "Jacuzzi", "description": "", "status": "Active", "createdBy": "Aditree Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
-    { "id": "AM-013", "name": "Smart TV", "description": "", "status": "Active", "createdBy": "Aditree Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
-    { "id": "AM-014", "name": "Safe", "description": "", "status": "Active", "createdBy": "Aditree Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
-    { "id": "AM-015", "name": "Workspace", "description": "", "status": "Active", "createdBy": "Aditree Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
-    { "id": "AM-016", "name": "Minibar", "description": "", "status": "Active", "createdBy": "Aditree Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
-    { "id": "AM-017", "name": "Coffee Machine", "description": "", "status": "Active", "createdBy": "Aditree Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" }
+    { "id": "AM-001", "name": "Free WiFi", "description": "Complimentary high-speed internet access", "status": "Active", "createdBy": "Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
+    { "id": "AM-002", "name": "Swimming Pool", "description": "", "status": "Active", "createdBy": "Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
+    { "id": "AM-003", "name": "Spa", "description": "", "status": "Active", "createdBy": "Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
+    { "id": "AM-004", "name": "Gym", "description": "", "status": "Active", "createdBy": "Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
+    { "id": "AM-005", "name": "Airport Shuttle", "description": "", "status": "Active", "createdBy": "Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
+    { "id": "AM-006", "name": "Business Center", "description": "", "status": "Active", "createdBy": "Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
+    { "id": "AM-007", "name": "Restaurant", "description": "", "status": "Active", "createdBy": "Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
+    { "id": "AM-008", "name": "Bar", "description": "", "status": "Active", "createdBy": "Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
+    { "id": "AM-009", "name": "Pet Friendly", "description": "", "status": "Active", "createdBy": "Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
+    { "id": "AM-010", "name": "Valet Parking", "description": "", "status": "Active", "createdBy": "Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
+    { "id": "AM-011", "name": "Balcony", "description": "", "status": "Active", "createdBy": "Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
+    { "id": "AM-012", "name": "Jacuzzi", "description": "", "status": "Active", "createdBy": "Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
+    { "id": "AM-013", "name": "Smart TV", "description": "", "status": "Active", "createdBy": "Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
+    { "id": "AM-014", "name": "Safe", "description": "", "status": "Active", "createdBy": "Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
+    { "id": "AM-015", "name": "Workspace", "description": "", "status": "Active", "createdBy": "Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
+    { "id": "AM-016", "name": "Minibar", "description": "", "status": "Active", "createdBy": "Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
+    { "id": "AM-017", "name": "Coffee Machine", "description": "", "status": "Active", "createdBy": "Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" }
   ],
   "mealPlans": [
-    { "id": "MP-EP", "code": "EP", "name": "European Plan", "description": "Room Only", "status": "Active", "createdBy": "Aditree Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
-    { "id": "MP-CP", "code": "CP", "name": "Continental Plan", "description": "Room + Breakfast", "status": "Active", "createdBy": "Aditree Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
-    { "id": "MP-MAP", "code": "MAP", "name": "Modified American Plan", "description": "Breakfast + One Major Meal", "status": "Active", "createdBy": "Aditree Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
-    { "id": "MP-AP", "code": "AP", "name": "American Plan", "description": "All Meals", "status": "Active", "createdBy": "Aditree Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
-    { "id": "MP-AI", "code": "AI", "name": "All Inclusive", "description": "All Meals, Beverages & Select Activities", "status": "Active", "createdBy": "Aditree Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
-    { "id": "MP-BB", "code": "BB", "name": "Bed & Breakfast", "description": "Room + Breakfast", "status": "Active", "createdBy": "Aditree Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
-    { "id": "MP-BUF", "code": "BUF", "name": "Buffet", "description": "Room + Buffet Meals", "status": "Active", "createdBy": "Aditree Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" }
+    { "id": "MP-EP", "code": "EP", "name": "European Plan", "description": "Room Only", "status": "Active", "createdBy": "Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
+    { "id": "MP-CP", "code": "CP", "name": "Continental Plan", "description": "Room + Breakfast", "status": "Active", "createdBy": "Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
+    { "id": "MP-MAP", "code": "MAP", "name": "Modified American Plan", "description": "Breakfast + One Major Meal", "status": "Active", "createdBy": "Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
+    { "id": "MP-AP", "code": "AP", "name": "American Plan", "description": "All Meals", "status": "Active", "createdBy": "Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
+    { "id": "MP-AI", "code": "AI", "name": "All Inclusive", "description": "All Meals, Beverages & Select Activities", "status": "Active", "createdBy": "Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
+    { "id": "MP-BB", "code": "BB", "name": "Bed & Breakfast", "description": "Room + Breakfast", "status": "Active", "createdBy": "Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
+    { "id": "MP-BUF", "code": "BUF", "name": "Buffet", "description": "Room + Buffet Meals", "status": "Active", "createdBy": "Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" }
   ],
   "occupancies": [
-    { "id": "OC-SGL", "code": "Single", "name": "Single Occupancy", "multiplier": 1.0, "status": "Active", "createdBy": "Aditree Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
-    { "id": "OC-DBL", "code": "Double", "name": "Double Occupancy", "multiplier": 1.15, "status": "Active", "createdBy": "Aditree Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
-    { "id": "OC-TPL", "code": "Triple", "name": "Triple Occupancy", "multiplier": 1.35, "status": "Active", "createdBy": "Aditree Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
-    { "id": "OC-QAD", "code": "Quad", "name": "Quad Occupancy", "multiplier": 1.55, "status": "Active", "createdBy": "Aditree Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" }
+    { "id": "OC-SGL", "code": "Single", "name": "Single Occupancy", "multiplier": 1.0, "status": "Active", "createdBy": "Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
+    { "id": "OC-DBL", "code": "Double", "name": "Double Occupancy", "multiplier": 1.15, "status": "Active", "createdBy": "Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
+    { "id": "OC-TPL", "code": "Triple", "name": "Triple Occupancy", "multiplier": 1.35, "status": "Active", "createdBy": "Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
+    { "id": "OC-QAD", "code": "Quad", "name": "Quad Occupancy", "multiplier": 1.55, "status": "Active", "createdBy": "Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" }
   ],
   "roomTypes": [
-    { "id": "RC-DLX", "name": "Deluxe", "description": "", "status": "Active", "createdBy": "Aditree Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
-    { "id": "RC-SDLX", "name": "Super Deluxe", "description": "", "status": "Active", "createdBy": "Aditree Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
-    { "id": "RC-EXE", "name": "Executive", "description": "", "status": "Active", "createdBy": "Aditree Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
-    { "id": "RC-STE", "name": "Suite", "description": "", "status": "Active", "createdBy": "Aditree Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
-    { "id": "RC-VIL", "name": "Villa", "description": "", "status": "Active", "createdBy": "Aditree Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" }
+    { "id": "RC-DLX", "name": "Deluxe", "description": "", "status": "Active", "createdBy": "Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
+    { "id": "RC-SDLX", "name": "Super Deluxe", "description": "", "status": "Active", "createdBy": "Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
+    { "id": "RC-EXE", "name": "Executive", "description": "", "status": "Active", "createdBy": "Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
+    { "id": "RC-STE", "name": "Suite", "description": "", "status": "Active", "createdBy": "Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
+    { "id": "RC-VIL", "name": "Villa", "description": "", "status": "Active", "createdBy": "Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" }
   ],
   "layouts": [
-    { "id": "LO-STU", "name": "Studio", "description": "", "status": "Active", "createdBy": "Aditree Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
-    { "id": "LO-1BR", "name": "One Bedroom", "description": "", "status": "Active", "createdBy": "Aditree Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
-    { "id": "LO-2BR", "name": "Two Bedroom", "description": "", "status": "Active", "createdBy": "Aditree Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
-    { "id": "LO-DUP", "name": "Duplex", "description": "", "status": "Active", "createdBy": "Aditree Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
-    { "id": "LO-PEN", "name": "Penthouse", "description": "", "status": "Active", "createdBy": "Aditree Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" }
+    { "id": "LO-STU", "name": "Studio", "description": "", "status": "Active", "createdBy": "Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
+    { "id": "LO-1BR", "name": "One Bedroom", "description": "", "status": "Active", "createdBy": "Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
+    { "id": "LO-2BR", "name": "Two Bedroom", "description": "", "status": "Active", "createdBy": "Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
+    { "id": "LO-DUP", "name": "Duplex", "description": "", "status": "Active", "createdBy": "Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
+    { "id": "LO-PEN", "name": "Penthouse", "description": "", "status": "Active", "createdBy": "Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" }
   ],
   "bedConfigurations": [
-    { "id": "BT-001", "name": "King Bed", "description": "", "status": "Active", "createdBy": "Aditree Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
-    { "id": "BT-002", "name": "Queen Bed", "description": "", "status": "Active", "createdBy": "Aditree Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
-    { "id": "BT-003", "name": "Twin Beds", "description": "", "status": "Active", "createdBy": "Aditree Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
-    { "id": "BT-004", "name": "Bunk Bed", "description": "", "status": "Active", "createdBy": "Aditree Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
-    { "id": "BT-005", "name": "Sofa Bed", "description": "", "status": "Active", "createdBy": "Aditree Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" }
+    { "id": "BT-001", "name": "King Bed", "description": "", "status": "Active", "createdBy": "Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
+    { "id": "BT-002", "name": "Queen Bed", "description": "", "status": "Active", "createdBy": "Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
+    { "id": "BT-003", "name": "Twin Beds", "description": "", "status": "Active", "createdBy": "Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
+    { "id": "BT-004", "name": "Bunk Bed", "description": "", "status": "Active", "createdBy": "Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
+    { "id": "BT-005", "name": "Sofa Bed", "description": "", "status": "Active", "createdBy": "Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" }
   ],
   "roomOptions": [
-    { "id": "RO-001", "name": "Connecting Room", "description": "", "status": "Active", "createdBy": "Aditree Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
-    { "id": "RO-002", "name": "Corner Room", "description": "", "status": "Active", "createdBy": "Aditree Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
-    { "id": "RO-003", "name": "Accessible Room", "description": "", "status": "Active", "createdBy": "Aditree Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
-    { "id": "RO-004", "name": "Non-Smoking", "description": "", "status": "Active", "createdBy": "Aditree Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
-    { "id": "RO-005", "name": "Smoking", "description": "", "status": "Active", "createdBy": "Aditree Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
-    { "id": "RO-006", "name": "Pet Friendly", "description": "", "status": "Active", "createdBy": "Aditree Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" }
+    { "id": "RO-001", "name": "Connecting Room", "description": "", "status": "Active", "createdBy": "Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
+    { "id": "RO-002", "name": "Corner Room", "description": "", "status": "Active", "createdBy": "Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
+    { "id": "RO-003", "name": "Accessible Room", "description": "", "status": "Active", "createdBy": "Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
+    { "id": "RO-004", "name": "Non-Smoking", "description": "", "status": "Active", "createdBy": "Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
+    { "id": "RO-005", "name": "Smoking", "description": "", "status": "Active", "createdBy": "Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
+    { "id": "RO-006", "name": "Pet Friendly", "description": "", "status": "Active", "createdBy": "Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" }
   ],
   "roomTemplates": [
-    { "id": "RT-001", "name": "Deluxe King Default", "description": "Standard Deluxe room preset", "status": "Active", "createdBy": "Aditree Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01",
+    { "id": "RT-001", "name": "Deluxe King Default", "description": "Standard Deluxe room preset", "status": "Active", "createdBy": "Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01",
       "preset": { "roomTypeId": "RC-DLX", "layoutId": "LO-1BR", "maxAdults": 2, "maxChildren": 1, "maxOccupancy": 3, "baseOccupancy": 2, "occupancyBasedType": "Double", "bedConfigurationId": "BT-001", "numberOfBeds": 1, "areaValue": 320, "areaUnit": "Sq. Ft." } },
-    { "id": "RT-002", "name": "Suite Family Default", "description": "Family suite preset", "status": "Active", "createdBy": "Aditree Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01",
+    { "id": "RT-002", "name": "Suite Family Default", "description": "Family suite preset", "status": "Active", "createdBy": "Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01",
       "preset": { "roomTypeId": "RC-STE", "layoutId": "LO-2BR", "maxAdults": 3, "maxChildren": 2, "maxOccupancy": 5, "baseOccupancy": 4, "occupancyBasedType": "Family", "bedConfigurationId": "BT-002", "numberOfBeds": 2, "areaValue": 620, "areaUnit": "Sq. Ft." } },
-    { "id": "RT-003", "name": "Executive Twin Default", "description": "Business-friendly twin preset", "status": "Active", "createdBy": "Aditree Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01",
+    { "id": "RT-003", "name": "Executive Twin Default", "description": "Business-friendly twin preset", "status": "Active", "createdBy": "Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01",
       "preset": { "roomTypeId": "RC-EXE", "layoutId": "LO-1BR", "maxAdults": 2, "maxChildren": 0, "maxOccupancy": 2, "baseOccupancy": 2, "occupancyBasedType": "Twin", "bedConfigurationId": "BT-003", "numberOfBeds": 2, "areaValue": 400, "areaUnit": "Sq. Ft." } }
   ],
   "tags": [
-    { "id": "TAG-BIZ", "name": "Business Traveller", "description": "", "status": "Active", "createdBy": "Aditree Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
-    { "id": "TAG-LEIS", "name": "Leisure", "description": "", "status": "Active", "createdBy": "Aditree Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
-    { "id": "TAG-GRP", "name": "Group Booking", "description": "", "status": "Active", "createdBy": "Aditree Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
-    { "id": "TAG-LOY", "name": "Loyalty Member", "description": "", "status": "Active", "createdBy": "Aditree Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
-    { "id": "TAG-FAM", "name": "Family", "description": "", "status": "Active", "createdBy": "Aditree Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
-    { "id": "TAG-HONEY", "name": "Honeymoon", "description": "", "status": "Active", "createdBy": "Aditree Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
-    { "id": "TAG-COUP", "name": "Couples", "description": "", "status": "Active", "createdBy": "Aditree Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
-    { "id": "TAG-LUX", "name": "Luxury Guests", "description": "", "status": "Active", "createdBy": "Aditree Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" }
+    { "id": "TAG-BIZ", "name": "Business Traveller", "description": "", "status": "Active", "createdBy": "Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
+    { "id": "TAG-LEIS", "name": "Leisure", "description": "", "status": "Active", "createdBy": "Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
+    { "id": "TAG-GRP", "name": "Group Booking", "description": "", "status": "Active", "createdBy": "Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
+    { "id": "TAG-LOY", "name": "Loyalty Member", "description": "", "status": "Active", "createdBy": "Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
+    { "id": "TAG-FAM", "name": "Family", "description": "", "status": "Active", "createdBy": "Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
+    { "id": "TAG-HONEY", "name": "Honeymoon", "description": "", "status": "Active", "createdBy": "Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
+    { "id": "TAG-COUP", "name": "Couples", "description": "", "status": "Active", "createdBy": "Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
+    { "id": "TAG-LUX", "name": "Luxury Guests", "description": "", "status": "Active", "createdBy": "Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" }
   ],
   "rateCategories": [
-    { "id": "RTC-STD", "name": "Standard Rate", "description": "", "status": "Active", "createdBy": "Aditree Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
-    { "id": "RTC-CORP", "name": "Corporate Rate", "description": "", "status": "Active", "createdBy": "Aditree Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
-    { "id": "RTC-PROMO", "name": "Promotional Rate", "description": "", "status": "Active", "createdBy": "Aditree Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
-    { "id": "RTC-NR", "name": "Non-Refundable Rate", "description": "", "status": "Draft", "createdBy": "Aditree Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" }
+    { "id": "RTC-STD", "name": "Standard Rate", "description": "", "status": "Active", "createdBy": "Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
+    { "id": "RTC-CORP", "name": "Corporate Rate", "description": "", "status": "Active", "createdBy": "Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
+    { "id": "RTC-PROMO", "name": "Promotional Rate", "description": "", "status": "Active", "createdBy": "Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
+    { "id": "RTC-NR", "name": "Non-Refundable Rate", "description": "", "status": "Draft", "createdBy": "Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" }
   ],
   "cancellationPolicies": [
-    { "id": "CXL-24H", "name": "Free Cancellation (24 Hours)", "description": "Free cancellation up to 24 hours before check-in", "status": "Active", "createdBy": "Aditree Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
-    { "id": "CXL-48H", "name": "Free Cancellation (48 Hours)", "description": "Free cancellation up to 48 hours before check-in", "status": "Active", "createdBy": "Aditree Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
-    { "id": "CXL-72H", "name": "Free Cancellation (72 Hours)", "description": "Free cancellation up to 72 hours before check-in", "status": "Active", "createdBy": "Aditree Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
-    { "id": "CXL-PARTIAL", "name": "Partial Refund", "description": "A partial refund applies on cancellation", "status": "Active", "createdBy": "Aditree Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
-    { "id": "CXL-NONREF", "name": "Non-Refundable", "description": "No refund on cancellation", "status": "Active", "createdBy": "Aditree Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" }
+    { "id": "CXL-24H", "name": "Free Cancellation (24 Hours)", "description": "Free cancellation up to 24 hours before check-in", "status": "Active", "createdBy": "Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
+    { "id": "CXL-48H", "name": "Free Cancellation (48 Hours)", "description": "Free cancellation up to 48 hours before check-in", "status": "Active", "createdBy": "Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
+    { "id": "CXL-72H", "name": "Free Cancellation (72 Hours)", "description": "Free cancellation up to 72 hours before check-in", "status": "Active", "createdBy": "Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
+    { "id": "CXL-PARTIAL", "name": "Partial Refund", "description": "A partial refund applies on cancellation", "status": "Active", "createdBy": "Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" },
+    { "id": "CXL-NONREF", "name": "Non-Refundable", "description": "No refund on cancellation", "status": "Active", "createdBy": "Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01" }
   ],
   "ratePlanTemplates": [
-    { "id": "RPT-001", "name": "Standard CP Default", "description": "Continental plan with exclusive 12% tax", "status": "Active", "createdBy": "Aditree Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01",
+    { "id": "RPT-001", "name": "Standard CP Default", "description": "Continental plan with exclusive 12% tax", "status": "Active", "createdBy": "Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01",
       "preset": { "mealPlanCode": "CP", "taxType": "Exclusive", "taxMethod": "Percentage", "taxValue": 12, "cancellationPolicyId": "CXL-24H" } },
-    { "id": "RPT-002", "name": "All Inclusive Premium", "description": "AI plan with inclusive 18% tax", "status": "Active", "createdBy": "Aditree Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01",
+    { "id": "RPT-002", "name": "All Inclusive Premium", "description": "AI plan with inclusive 18% tax", "status": "Active", "createdBy": "Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01",
       "preset": { "mealPlanCode": "AI", "taxType": "Inclusive", "taxMethod": "Percentage", "taxValue": 18, "cancellationPolicyId": "CXL-72H" } },
-    { "id": "RPT-003", "name": "Non-Refundable Saver", "description": "EP plan, fixed tax, no refunds", "status": "Active", "createdBy": "Aditree Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01",
+    { "id": "RPT-003", "name": "Non-Refundable Saver", "description": "EP plan, fixed tax, no refunds", "status": "Active", "createdBy": "Admin", "createdDate": "2026-05-01", "modifiedDate": "2026-05-01",
       "preset": { "mealPlanCode": "EP", "taxType": "Exclusive", "taxMethod": "Percentage", "taxValue": 12, "cancellationPolicyId": "CXL-NONREF" } }
   ]
 }

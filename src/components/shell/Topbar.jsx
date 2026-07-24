@@ -32,11 +32,16 @@ export default function Topbar({ onOpenMobile }) {
       {benchmarkProperty && (
         <button
           type="button"
-          className="benchmark-badge benchmark-badge--button"
-          data-tooltip="Click to change Our Property"
+          className="benchmark-switcher"
+          data-tooltip="Change Our Property (benchmark)"
           onClick={() => setBenchmarkModalOpen(true)}
         >
-          <Star /> <span className="benchmark-badge__text">Our Property: {benchmarkProperty.name}</span>
+          <span className="benchmark-switcher__icon"><Star /></span>
+          <span className="benchmark-switcher__body">
+            <span className="benchmark-switcher__label">Our Property</span>
+            <span className="benchmark-switcher__name">{benchmarkProperty.name}</span>
+          </span>
+          <ChevronDown className={`benchmark-switcher__chev ${benchmarkModalOpen ? "is-rotated" : ""}`} />
         </button>
       )}
 

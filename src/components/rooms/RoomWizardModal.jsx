@@ -4,7 +4,7 @@ import {
   Check, X, AlertCircle, CheckCircle2, Wand2, Settings2, Send,
 } from "lucide-react";
 import Modal from "../ui/Modal";
-import { FieldInput, FieldTextarea } from "../ui/FieldFloat";
+import { FieldInput, FieldTextarea, FieldSelect } from "../ui/FieldFloat";
 import ManagedSelectField from "../config/ManagedSelectField";
 import ChipMultiSelect from "../config/ChipMultiSelect";
 import ManageListModal from "../config/ManageListModal";
@@ -98,7 +98,7 @@ export default function RoomWizardModal({ open, onClose, mode = "create", proper
       toast({ title: "Room updated", message: `${form.name} saved successfully.`, type: "success" });
       onSaved?.(room.id);
     } else {
-      const record = createRoom({ ...payload, notes: noteDraft.trim() ? [{ id: `NOTE-${Date.now()}`, author: "Aditree Admin", date: new Date().toISOString().slice(0, 10), text: noteDraft.trim() }] : [], displayOrder: 999 });
+      const record = createRoom({ ...payload, notes: noteDraft.trim() ? [{ id: `NOTE-${Date.now()}`, author: "Admin", date: new Date().toISOString().slice(0, 10), text: noteDraft.trim() }] : [], displayOrder: 999 });
       toast({ title: "Room created", message: `${form.name} added successfully.`, type: "success" });
       onSaved?.(record.id);
     }
@@ -168,13 +168,7 @@ export default function RoomWizardModal({ open, onClose, mode = "create", proper
 
               <div className="form-grid cols-2">
                 <FieldInput label="Room Area" type="number" value={form.areaValue} onChange={set("areaValue")} />
-                <div className="field field-float">
-                  <select className={form.areaUnit ? "has-value" : ""} value={form.areaUnit} onChange={(e) => set("areaUnit")(e.target.value)}>
-                    <option>Sq. Ft.</option>
-                    <option>Sq. M.</option>
-                  </select>
-                  <label>Area Unit</label>
-                </div>
+                <FieldSelect label="Area Unit" value={form.areaUnit} onChange={set("areaUnit")} options={["Sq. Ft.", "Sq. M."]} />
               </div>
             </div>
           )}
@@ -197,12 +191,7 @@ export default function RoomWizardModal({ open, onClose, mode = "create", proper
 
           {step === "bed" && (
             <div className="form-stack">
-              <div className="field field-float">
-                <select className={form.occupancyBasedType ? "has-value" : ""} value={form.occupancyBasedType} onChange={(e) => set("occupancyBasedType")(e.target.value)}>
-                  {OCCUPANCY_TYPES.map((o) => <option key={o}>{o}</option>)}
-                </select>
-                <label>Occupancy Based</label>
-              </div>
+              <FieldSelect label="Occupancy Based" value={form.occupancyBasedType} onChange={set("occupancyBasedType")} options={OCCUPANCY_TYPES} />
               <ManagedSelectField listKey="bedConfigurations" label="Bed Configuration" value={form.bedConfigurationId} onChange={set("bedConfigurationId")} icon={BedDouble} />
               <FieldInput label="Number of Beds" type="number" value={form.numberOfBeds} onChange={set("numberOfBeds")} />
             </div>
