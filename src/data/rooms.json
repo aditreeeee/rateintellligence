@@ -32,7 +32,16 @@
     "displayOrder": 1,
     "createdBy": "Admin",
     "createdDate": "2026-05-02",
-    "modifiedDate": "2026-07-10"
+    "modifiedDate": "2026-07-10",
+    "allowedMealPlanCodes": [
+      "EP",
+      "CP",
+      "MAP",
+      "AP",
+      "AI",
+      "BB",
+      "BUF"
+    ]
   },
   {
     "id": "RM-02",
@@ -69,7 +78,16 @@
     "displayOrder": 2,
     "createdBy": "Admin",
     "createdDate": "2026-05-02",
-    "modifiedDate": "2026-07-10"
+    "modifiedDate": "2026-07-10",
+    "allowedMealPlanCodes": [
+      "EP",
+      "CP",
+      "MAP",
+      "AP",
+      "AI",
+      "BB",
+      "BUF"
+    ]
   },
   {
     "id": "RM-03",
@@ -105,7 +123,16 @@
     "displayOrder": 3,
     "createdBy": "Admin",
     "createdDate": "2026-05-02",
-    "modifiedDate": "2026-07-10"
+    "modifiedDate": "2026-07-10",
+    "allowedMealPlanCodes": [
+      "EP",
+      "CP",
+      "MAP",
+      "AP",
+      "AI",
+      "BB",
+      "BUF"
+    ]
   },
   {
     "id": "RM-04",
@@ -144,7 +171,16 @@
     "displayOrder": 4,
     "createdBy": "Admin",
     "createdDate": "2026-05-02",
-    "modifiedDate": "2026-07-10"
+    "modifiedDate": "2026-07-10",
+    "allowedMealPlanCodes": [
+      "EP",
+      "CP",
+      "MAP",
+      "AP",
+      "AI",
+      "BB",
+      "BUF"
+    ]
   },
   {
     "id": "RM-05",
@@ -179,7 +215,16 @@
     "displayOrder": 1,
     "createdBy": "Admin",
     "createdDate": "2026-05-02",
-    "modifiedDate": "2026-07-10"
+    "modifiedDate": "2026-07-10",
+    "allowedMealPlanCodes": [
+      "EP",
+      "CP",
+      "MAP",
+      "AP",
+      "AI",
+      "BB",
+      "BUF"
+    ]
   },
   {
     "id": "RM-06",
@@ -213,7 +258,16 @@
     "displayOrder": 2,
     "createdBy": "Admin",
     "createdDate": "2026-05-02",
-    "modifiedDate": "2026-07-10"
+    "modifiedDate": "2026-07-10",
+    "allowedMealPlanCodes": [
+      "EP",
+      "CP",
+      "MAP",
+      "AP",
+      "AI",
+      "BB",
+      "BUF"
+    ]
   },
   {
     "id": "RM-07",
@@ -252,7 +306,16 @@
     "displayOrder": 3,
     "createdBy": "Admin",
     "createdDate": "2026-05-02",
-    "modifiedDate": "2026-07-10"
+    "modifiedDate": "2026-07-10",
+    "allowedMealPlanCodes": [
+      "EP",
+      "CP",
+      "MAP",
+      "AP",
+      "AI",
+      "BB",
+      "BUF"
+    ]
   },
   {
     "id": "RM-08",
@@ -285,7 +348,16 @@
     "displayOrder": 1,
     "createdBy": "Admin",
     "createdDate": "2026-05-02",
-    "modifiedDate": "2026-07-10"
+    "modifiedDate": "2026-07-10",
+    "allowedMealPlanCodes": [
+      "EP",
+      "CP",
+      "MAP",
+      "AP",
+      "AI",
+      "BB",
+      "BUF"
+    ]
   },
   {
     "id": "RM-09",
@@ -321,6 +393,15 @@
     "displayOrder": 2,
     "createdBy": "Admin",
     "createdDate": "2026-05-02",
-    "modifiedDate": "2026-07-10"
+    "modifiedDate": "2026-07-10",
+    "allowedMealPlanCodes": [
+      "EP",
+      "CP",
+      "MAP",
+      "AP",
+      "AI",
+      "BB",
+      "BUF"
+    ]
   }
 ]

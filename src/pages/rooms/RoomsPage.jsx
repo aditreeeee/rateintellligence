@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Building2, Plus, Pencil, Trash2, Copy, Archive, ArchiveRestore, Eye,
-  Search, AlertTriangle, ChevronLeft, ChevronRight,
+  Search, AlertTriangle, ChevronLeft, ChevronRight, LayoutGrid, List, Layers,
 } from "lucide-react";
 import PageHeader from "../../components/ui/PageHeader";
 import EmptyState from "../../components/ui/EmptyState";
@@ -20,6 +20,7 @@ export default function RoomsPage() {
   const navigate = useNavigate();
 
   const [selectedPropertyId, setSelectedPropertyId] = useState(properties[0]?.id);
+  const [view, setView] = useState("list");
   const [query, setQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
   const [sortBy, setSortBy] = useState("displayOrder");
@@ -73,6 +74,10 @@ export default function RoomsPage() {
     setWizardOpen(true);
   }
 
+  function manageRatePlans(room) {
+    navigate(`/rate-plans?propertyId=${room.propertyId}&roomId=${room.id}`);
+  }
+
   function handleDuplicate(room) {
     const copy = duplicateRoom(room.id);
     toast({ title: "Room duplicated", message: `${copy.name} created as Inactive — review before activating.`, type: "success" });
@@ -119,15 +124,19 @@ export default function RoomsPage() {
         <aside className="filter-panel">
           <div className="card filter-panel__section">
             <div className="filter-panel__label"><Building2 /> Property</div>
-            <div className="filter-option-list">
-              {properties.map((p) => (
-                <div key={p.id} className={`filter-option ${p.id === selectedPropertyId ? "is-active" : ""}`} onClick={() => selectProperty(p.id)}>
-                  <span className="filter-option__avatar">{p.name.split(" ").map((w) => w[0]).slice(0, 2).join("")}</span>
-                  <span><div>{p.name}</div><div className="filter-option__meta">{p.id}</div></span>
-                  <span className="badge badge-neutral">{getRoomsByProperty(p.id).length}</span>
-                </div>
-              ))}
-            </div>
+            <Select
+              searchable
+              placeholder="Select a property..."
+              value={selectedPropertyId || ""}
+              onChange={selectProperty}
+              options={properties.map((p) => ({ value: p.id, label: `${p.name} (${getRoomsByProperty(p.id).length} rooms)` }))}
+            />
+            {activeProperty && (
+              <div className="filter-option is-active" style={{ cursor: "default", marginTop: "var(--space-3)" }}>
+                <span className="filter-option__avatar">{activeProperty.name.split(" ").map((w) => w[0]).slice(0, 2).join("")}</span>
+                <span><div>{activeProperty.name}</div><div className="filter-option__meta">{activeProperty.id} · {activeProperty.city}</div></span>
+              </div>
+            )}
           </div>
         </aside>
 
@@ -162,6 +171,14 @@ export default function RoomsPage() {
                 ]}
               />
             </div>
+            <div className="view-toggle" role="tablist" aria-label="View mode">
+              <button type="button" className={view === "grid" ? "is-active" : ""} onClick={() => setView("grid")} data-tooltip="Grid view">
+                <LayoutGrid />
+              </button>
+              <button type="button" className={view === "list" ? "is-active" : ""} onClick={() => setView("list")} data-tooltip="List view">
+                <List />
+              </button>
+            </div>
           </div>
 
           {selectedIds.length > 0 && (
@@ -185,6 +202,36 @@ export default function RoomsPage() {
                 action={allRooms.length === 0 && <button className="btn btn-primary" onClick={openCreate}><Plus /> Add Room</button>}
               />
             </div>
+          ) : view === "grid" ? (
+            <section className="card-grid" aria-label="Room list">
+              {pageRooms.map((r) => (
+                <article className="card card-hover entity-card" key={r.id} style={{ cursor: "pointer" }} onClick={() => navigate(`/rooms/${r.id}`)}>
+                  <div className="entity-card__top">
+                    <div className="entity-card__avatar">{r.name.split(" ").map((w) => w[0]).slice(0, 2).join("")}</div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div className="entity-card__title">{r.name}</div>
+                      <div className="entity-card__meta">{r.id}</div>
+                    </div>
+                    {r.status === "Active" ? <span className="badge badge-success pulse">Active</span> : <span className="badge badge-neutral">Inactive</span>}
+                  </div>
+                  <p className="entity-card__desc">{r.description}</p>
+                  <div className="entity-card__stats">
+                    <div><strong>{r.maxAdults}/{r.maxChildren}</strong>Adults/Children</div>
+                    <div><strong>{r.areaValue}</strong>{r.areaUnit}</div>
+                    <div><strong>{getRatePlansByRoom(r.id).length}</strong>Rate Plans</div>
+                  </div>
+                  <div className="entity-card__footer">
+                    <span className="text-muted" style={{ fontSize: "var(--fs-xs)" }}>{r.allowedMealPlanCodes?.length || 0} meal plans allowed</span>
+                    <div className="entity-card__actions">
+                      <button className="icon-btn btn-sm" data-tooltip="Manage Rate Plans" onClick={(e) => { e.stopPropagation(); manageRatePlans(r); }}><Layers /></button>
+                      <button className="icon-btn btn-sm" data-tooltip="Edit" onClick={(e) => { e.stopPropagation(); openEdit(r); }}><Pencil /></button>
+                      <button className="icon-btn btn-sm" data-tooltip="Duplicate" onClick={(e) => { e.stopPropagation(); handleDuplicate(r); }}><Copy /></button>
+                      <button className="icon-btn btn-sm" data-tooltip="Delete" onClick={(e) => { e.stopPropagation(); setConfirmDelete(r); }}><Trash2 /></button>
+                    </div>
+                  </div>
+                </article>
+              ))}
+            </section>
           ) : (
             <>
               <div className="table-wrap card">
@@ -217,6 +264,7 @@ export default function RoomsPage() {
                         <td>
                           <div className="row-actions">
                             <button className="icon-btn btn-sm" data-tooltip="View" onClick={() => navigate(`/rooms/${r.id}`)}><Eye /></button>
+                            <button className="icon-btn btn-sm" data-tooltip="Manage Rate Plans" onClick={() => manageRatePlans(r)}><Layers /></button>
                             <button className="icon-btn btn-sm" data-tooltip="Edit" onClick={() => openEdit(r)}><Pencil /></button>
                             <button className="icon-btn btn-sm" data-tooltip="Duplicate" onClick={() => handleDuplicate(r)}><Copy /></button>
                             <button className="icon-btn btn-sm" data-tooltip={r.status === "Active" ? "Archive" : "Restore"} onClick={() => handleArchiveToggle(r)}>

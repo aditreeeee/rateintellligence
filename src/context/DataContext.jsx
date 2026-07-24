@@ -9,6 +9,14 @@ import competitorsSeed from "../data/competitors.json";
 
 const DataContext = createContext(null);
 
+// ---- RBAC hierarchy ----
+// Only the Company level is implemented today (a single Company Admin plus
+// Company Users, all with full access). The levels below are reserved so the
+// data model and permission checks can grow into them later without another
+// restructure — they are not wired into any UI or access check yet.
+export const ROLE_LEVELS = ["Company", "PropertyOwner", "PropertyEmployee"];
+export const ACTIVE_ROLE_LEVEL = "Company";
+
 function nextId(prefix, existing) {
   const nums = existing
     .map((x) => parseInt(String(x.id).replace(/\D/g, ""), 10))
@@ -71,6 +79,12 @@ export function DataProvider({ children }) {
 
   const updateProperty = useCallback((id, patch) => {
     setProperties((prev) => prev.map((p) => (p.id === id ? { ...p, ...patch, updatedAt: new Date().toISOString().slice(0, 10) } : p)));
+  }, []);
+
+  const deleteProperty = useCallback((id) => {
+    setProperties((prev) => prev.filter((p) => p.id !== id));
+    setRooms((prev) => prev.filter((r) => r.propertyId !== id));
+    setRatePlans((prev) => prev.filter((rp) => rp.propertyId !== id));
   }, []);
 
   const setBenchmarkProperty = useCallback((id) => {
@@ -263,6 +277,7 @@ export function DataProvider({ children }) {
       isRatePlanNameTaken,
       createProperty,
       updateProperty,
+      deleteProperty,
       setBenchmarkProperty,
       addPropertyNote,
       createRoom,
@@ -283,7 +298,7 @@ export function DataProvider({ children }) {
     [
       company, companies, properties, rooms, ratePlans, masterData, competitors, benchmarkProperty,
       getPropertyById, getRoomById, getRoomsByProperty, getRatePlanById, getRatePlansByRoom, getRatePlansByProperty,
-      isRoomNameTaken, isRatePlanNameTaken, createProperty, updateProperty, setBenchmarkProperty,
+      isRoomNameTaken, isRatePlanNameTaken, createProperty, updateProperty, deleteProperty, setBenchmarkProperty,
       addPropertyNote, createRoom, updateRoom, deleteRoom, duplicateRoom, addRoomNote,
       createRatePlan, updateRatePlan, deleteRatePlan, duplicateRatePlan, addRatePlanNote,
       isConfigNameTaken, addConfigItem, updateConfigItem, deleteConfigItem,

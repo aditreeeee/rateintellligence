@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   LayoutGrid, BedDouble, ShieldCheck, StickyNote, Search,
   Check, X, AlertCircle, CheckCircle2, Wand2, Settings2, Send, Plus, Trash2, IndianRupee, Utensils,
@@ -70,7 +70,7 @@ function emptyForm() {
   };
 }
 
-export default function RatePlanWizardModal({ open, onClose, mode = "create", propertyId, propertyName, ratePlan, onSaved, initialStep = "overview" }) {
+export default function RatePlanWizardModal({ open, onClose, mode = "create", propertyId, propertyName, ratePlan, onSaved, initialStep = "overview", initialRoomIds = [] }) {
   const { masterData, getRoomsByProperty, createRatePlan, updateRatePlan, addRatePlanNote, isRatePlanNameTaken } = useData();
   const toast = useToast();
   const isEdit = mode === "edit";
@@ -85,6 +85,12 @@ export default function RatePlanWizardModal({ open, onClose, mode = "create", pr
 
   const propertyRooms = useMemo(() => getRoomsByProperty(propertyId), [getRoomsByProperty, propertyId]);
 
+  // initialRoomIds is a fresh array on every parent render; read it through a
+  // ref so the reset effect below only fires on open/close/ratePlan changes,
+  // not on every unrelated re-render of the page behind the modal.
+  const initialRoomIdsRef = useRef(initialRoomIds);
+  initialRoomIdsRef.current = initialRoomIds;
+
   useEffect(() => {
     if (!open) return;
     setStep(initialStep);
@@ -97,10 +103,35 @@ export default function RatePlanWizardModal({ open, onClose, mode = "create", pr
       setForm({ ...emptyForm(), ...ratePlan, mealPlanCodes, mealPlanPricing });
       setActiveMealTab(mealPlanCodes[0] || null);
     } else {
-      setForm(emptyForm());
+      // Pre-populate (but don't hard-lock) the Room selection when the user
+      // already had a Property + Room chosen on the Rate Plans page before
+      // clicking Add — they can still change it here if they want.
+      setForm({ ...emptyForm(), roomIds: initialRoomIdsRef.current });
       setActiveMealTab(null);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, isEdit, ratePlan, initialStep]);
+
+  // If the room selection narrows which meal plans are allowed, drop any
+  // already-picked meal plan (and its pricing) that's no longer permitted.
+  useEffect(() => {
+    if (!open || form.roomIds.length === 0) return;
+    const rooms = propertyRooms.filter((r) => form.roomIds.includes(r.id));
+    const allowed = rooms.reduce((acc, r) => {
+      const roomAllowed = r.allowedMealPlanCodes || masterData.mealPlans.map((m) => m.code);
+      return acc === null ? roomAllowed : acc.filter((c) => roomAllowed.includes(c));
+    }, null) || [];
+    const disallowed = form.mealPlanCodes.filter((c) => !allowed.includes(c));
+    if (disallowed.length === 0) return;
+    setForm((f) => {
+      const mealPlanCodes = f.mealPlanCodes.filter((c) => !disallowed.includes(c));
+      const mealPlanPricing = { ...f.mealPlanPricing };
+      disallowed.forEach((c) => delete mealPlanPricing[c]);
+      return { ...f, mealPlanCodes, mealPlanPricing };
+    });
+    setActiveMealTab((prev) => (disallowed.includes(prev) ? null : prev));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, form.roomIds, propertyRooms]);
 
   const set = (key) => (val) => setForm((f) => ({ ...f, [key]: val }));
 
@@ -222,7 +253,17 @@ export default function RatePlanWizardModal({ open, onClose, mode = "create", pr
 
   const stepIndex = STEPS.findIndex((s) => s.key === step);
   const filteredRooms = propertyRooms.filter((r) => r.name.toLowerCase().includes(roomSearch.trim().toLowerCase()));
-  const activeMealPlans = masterData.mealPlans.filter((m) => m.status === "Active");
+
+  // A meal plan can only be configured on a rate plan if every currently
+  // selected room allows it (Rooms module owns which meal plans exist per room).
+  const selectedRooms = propertyRooms.filter((r) => form.roomIds.includes(r.id));
+  const allowedMealCodes = selectedRooms.length === 0
+    ? []
+    : selectedRooms.reduce((acc, r) => {
+        const allowed = r.allowedMealPlanCodes || masterData.mealPlans.map((m) => m.code);
+        return acc === null ? allowed : acc.filter((c) => allowed.includes(c));
+      }, null) || [];
+  const activeMealPlans = masterData.mealPlans.filter((m) => m.status === "Active" && allowedMealCodes.includes(m.code));
   const activePeriodsForTab = activeMealTab ? form.mealPlanPricing[activeMealTab] || [] : [];
 
   return (
@@ -318,22 +359,28 @@ export default function RatePlanWizardModal({ open, onClose, mode = "create", pr
           {step === "mealplans" && (
             <div className="form-stack">
               <p className="field-hint" style={{ marginTop: 0 }}>
-                A Rate Plan can bundle one or more Meal Plans. Each Meal Plan below gets its own occupancy pricing and validity periods on the next step.
+                A Rate Plan can bundle one or more Meal Plans. Each Meal Plan below gets its own occupancy pricing and validity periods on the next step. Only meal plans allowed on every selected room are shown here — configure that on each Room.
               </p>
               <div className="filter-panel__label"><Utensils /> Meal Plans</div>
-              <div className="chip-multiselect__grid">
-                {activeMealPlans.map((m) => (
-                  <div
-                    key={m.code}
-                    className={`chip-tile ${form.mealPlanCodes.includes(m.code) ? "is-active" : ""}`}
-                    onClick={() => toggleMealPlan(m.code)}
-                  >
-                    <span className={`rp-mealplan-badge ${m.code}`} style={{ marginRight: 8 }}>{m.code}</span>
-                    {m.name}
-                  </div>
-                ))}
-              </div>
-              {form.mealPlanCodes.length === 0 && (
+              {selectedRooms.length === 0 ? (
+                <div className="filter-empty">Select rooms on the previous step to see their allowed meal plans.</div>
+              ) : activeMealPlans.length === 0 ? (
+                <div className="filter-empty">The selected rooms have no meal plans in common. Adjust each room's Allowed Meal Plans first.</div>
+              ) : (
+                <div className="chip-multiselect__grid">
+                  {activeMealPlans.map((m) => (
+                    <div
+                      key={m.code}
+                      className={`chip-tile ${form.mealPlanCodes.includes(m.code) ? "is-active" : ""}`}
+                      onClick={() => toggleMealPlan(m.code)}
+                    >
+                      <span className={`rp-mealplan-badge ${m.code}`} style={{ marginRight: 8 }}>{m.code}</span>
+                      {m.name}
+                    </div>
+                  ))}
+                </div>
+              )}
+              {selectedRooms.length > 0 && activeMealPlans.length > 0 && form.mealPlanCodes.length === 0 && (
                 <div className="filter-empty">Select at least one meal plan to configure pricing.</div>
               )}
             </div>

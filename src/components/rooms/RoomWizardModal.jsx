@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import {
-  LayoutGrid, Tags, Users, BedDouble, Sparkles, Heart, StickyNote,
+  LayoutGrid, Tags, Users, BedDouble, Sparkles, Heart, StickyNote, Utensils,
   Check, X, AlertCircle, CheckCircle2, Wand2, Settings2, Send,
 } from "lucide-react";
 import Modal from "../ui/Modal";
@@ -16,6 +16,7 @@ const STEPS = [
   { key: "classification", label: "Classification", icon: Tags },
   { key: "occupancy", label: "Occupancy", icon: Users },
   { key: "bed", label: "Bed Configuration", icon: BedDouble },
+  { key: "mealplans", label: "Allowed Meal Plans", icon: Utensils },
   { key: "features", label: "Features", icon: Sparkles },
   { key: "amenities", label: "Amenities", icon: Sparkles },
   { key: "bestFor", label: "Best Suited For", icon: Heart },
@@ -30,12 +31,12 @@ function emptyForm() {
     roomTypeId: "", layoutId: "",
     maxAdults: 2, maxChildren: 0, maxOccupancy: 2, baseOccupancy: 2,
     occupancyBasedType: "Double", bedConfigurationId: "", numberOfBeds: 1,
-    roomOptionIds: [], amenityIds: [], tagIds: [],
+    roomOptionIds: [], amenityIds: [], tagIds: [], allowedMealPlanCodes: [],
     notes: [],
   };
 }
 
-export default function RoomWizardModal({ open, onClose, mode = "create", propertyId, propertyName, room, onSaved }) {
+export default function RoomWizardModal({ open, onClose, mode = "create", propertyId, propertyName, room, onSaved, initialStep = "overview" }) {
   const { masterData, createRoom, updateRoom, addRoomNote, isRoomNameTaken, getRatePlansByRoom } = useData();
   const toast = useToast();
   const isEdit = mode === "edit";
@@ -48,15 +49,16 @@ export default function RoomWizardModal({ open, onClose, mode = "create", proper
 
   useEffect(() => {
     if (!open) return;
-    setStep("overview");
+    setStep(initialStep);
     setNameTouched(false);
     setNoteDraft("");
     if (isEdit && room) {
       setForm({ ...emptyForm(), ...room });
     } else {
-      setForm(emptyForm());
+      // New rooms default to allowing every active meal plan; narrow later if needed.
+      setForm({ ...emptyForm(), allowedMealPlanCodes: masterData.mealPlans.filter((m) => m.status === "Active").map((m) => m.code) });
     }
-  }, [open, isEdit, room]);
+  }, [open, isEdit, room, initialStep]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const set = (key) => (val) => setForm((f) => ({ ...f, [key]: val }));
 
@@ -91,6 +93,7 @@ export default function RoomWizardModal({ open, onClose, mode = "create", proper
       roomOptionIds: form.roomOptionIds,
       amenityIds: form.amenityIds,
       tagIds: form.tagIds,
+      allowedMealPlanCodes: form.allowedMealPlanCodes,
     };
 
     if (isEdit) {
@@ -194,6 +197,33 @@ export default function RoomWizardModal({ open, onClose, mode = "create", proper
               <FieldSelect label="Occupancy Based" value={form.occupancyBasedType} onChange={set("occupancyBasedType")} options={OCCUPANCY_TYPES} />
               <ManagedSelectField listKey="bedConfigurations" label="Bed Configuration" value={form.bedConfigurationId} onChange={set("bedConfigurationId")} icon={BedDouble} />
               <FieldInput label="Number of Beds" type="number" value={form.numberOfBeds} onChange={set("numberOfBeds")} />
+            </div>
+          )}
+
+          {step === "mealplans" && (
+            <div className="form-stack">
+              <p className="field-hint" style={{ marginTop: 0 }}>
+                Only meal plans selected here can be configured for this room within the Rate Plans module.
+              </p>
+              <div className="chip-multiselect__grid">
+                {masterData.mealPlans.filter((m) => m.status === "Active").map((m) => (
+                  <div
+                    key={m.code}
+                    className={`chip-tile ${form.allowedMealPlanCodes.includes(m.code) ? "is-active" : ""}`}
+                    onClick={() => set("allowedMealPlanCodes")(
+                      form.allowedMealPlanCodes.includes(m.code)
+                        ? form.allowedMealPlanCodes.filter((c) => c !== m.code)
+                        : [...form.allowedMealPlanCodes, m.code]
+                    )}
+                  >
+                    <span className={`rp-mealplan-badge ${m.code}`} style={{ marginRight: 8 }}>{m.code}</span>
+                    {m.name}
+                  </div>
+                ))}
+              </div>
+              {form.allowedMealPlanCodes.length === 0 && (
+                <div className="filter-empty">No meal plans allowed yet — Rate Plans for this room will have none to choose from.</div>
+              )}
             </div>
           )}
 

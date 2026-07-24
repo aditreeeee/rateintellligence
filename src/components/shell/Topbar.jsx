@@ -1,12 +1,10 @@
 import { useState, useRef, useEffect } from "react";
-import { Search, Menu, Bell, CircleHelp, ChevronDown, User, Shield, Settings, LogOut, Star } from "lucide-react";
+import { Search, Menu, Bell, CircleHelp, ChevronDown, User, Shield, Settings, LogOut } from "lucide-react";
 import { useData } from "../../context/DataContext";
-import ChooseBenchmarkModal from "../properties/ChooseBenchmarkModal";
 
 export default function Topbar({ onOpenMobile }) {
-  const { company, benchmarkProperty } = useData();
+  const { company } = useData();
   const [userOpen, setUserOpen] = useState(false);
-  const [benchmarkModalOpen, setBenchmarkModalOpen] = useState(false);
   const ref = useRef(null);
 
   useEffect(() => {
@@ -28,22 +26,6 @@ export default function Topbar({ onOpenMobile }) {
         <input type="text" placeholder="Search properties, rooms, rate plans..." aria-label="Search" />
         <kbd>⌘K</kbd>
       </div>
-
-      {benchmarkProperty && (
-        <button
-          type="button"
-          className="benchmark-switcher"
-          data-tooltip="Change Our Property (benchmark)"
-          onClick={() => setBenchmarkModalOpen(true)}
-        >
-          <span className="benchmark-switcher__icon"><Star /></span>
-          <span className="benchmark-switcher__body">
-            <span className="benchmark-switcher__label">Our Property</span>
-            <span className="benchmark-switcher__name">{benchmarkProperty.name}</span>
-          </span>
-          <ChevronDown className={`benchmark-switcher__chev ${benchmarkModalOpen ? "is-rotated" : ""}`} />
-        </button>
-      )}
 
       <div className="topbar__spacer"></div>
 
@@ -73,8 +55,6 @@ export default function Topbar({ onOpenMobile }) {
           </div>
         </div>
       </div>
-
-      <ChooseBenchmarkModal open={benchmarkModalOpen} onClose={() => setBenchmarkModalOpen(false)} />
     </header>
   );
 }

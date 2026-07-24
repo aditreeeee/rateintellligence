@@ -1,11 +1,13 @@
 import { Fragment, memo, useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
 import {
   Building2, BedDouble, Utensils, Upload, WandSparkles, X, Check, Settings2,
-  ChevronDown, ChevronRight, ChevronLeft, CalendarRange, Layers, ArrowDownNarrowWide, ArrowUpNarrowWide, Pencil,
+  ChevronDown, ChevronRight, ChevronLeft, Layers, ArrowDownNarrowWide, ArrowUpNarrowWide, Pencil,
 } from "lucide-react";
 import PageHeader from "../../components/ui/PageHeader";
 import EmptyState from "../../components/ui/EmptyState";
 import Modal from "../../components/ui/Modal";
+import Select from "../../components/ui/Select";
+import MultiSelect from "../../components/ui/MultiSelect";
 import ManageListModal from "../../components/config/ManageListModal";
 import { FieldInput } from "../../components/ui/FieldFloat";
 import { useData } from "../../context/DataContext";
@@ -153,9 +155,7 @@ export default function CalendarPage() {
   const [monthOffset, setMonthOffset] = useState(0);
   const [customRange, setCustomRange] = useState({ from: toISO(addDays(today, -6)), to: toISO(today) });
   const [customOpen, setCustomOpen] = useState(false);
-  const [presetOpen, setPresetOpen] = useState(false);
   const [jumpDate, setJumpDate] = useState("");
-  const presetRef = useRef(null);
   const scrollWrapRef = useRef(null);
 
   const fullRange = useMemo(() => rangeForPreset(preset, customRange, monthOffset), [preset, customRange, monthOffset]);
@@ -211,33 +211,29 @@ export default function CalendarPage() {
   const [highlightLowest, setHighlightLowest] = useState(false);
   const [highlightHighest, setHighlightHighest] = useState(false);
 
+  // Property -> Room: selecting a property resets the Room picker to every
+  // room that property has.
   useEffect(() => {
     const propRooms = getRoomsByProperty(propertyId);
     setSelectedRoomIds(propRooms.map((r) => r.id));
-    setSelectedRoomTypeIds([...new Set(propRooms.map((r) => r.roomTypeId))]);
   }, [propertyId, getRoomsByProperty]);
 
-  // Room Type facet: distinct room types present among this property's rooms,
-  // each with a live count so the panel reflects the current data instantly.
+  // Room -> Room Type: the Room Type picker is scoped to whatever room
+  // selection is currently active, not the whole property.
+  const selectedRoomObjs = useMemo(() => rooms.filter((r) => selectedRoomIds.includes(r.id)), [rooms, selectedRoomIds]);
   const roomTypeFacets = useMemo(() => {
     const counts = new Map();
-    rooms.forEach((r) => counts.set(r.roomTypeId, (counts.get(r.roomTypeId) || 0) + 1));
+    selectedRoomObjs.forEach((r) => counts.set(r.roomTypeId, (counts.get(r.roomTypeId) || 0) + 1));
     return masterData.roomTypes
       .filter((rt) => counts.has(rt.id))
       .map((rt) => ({ ...rt, count: counts.get(rt.id) }));
-  }, [rooms, masterData.roomTypes]);
-
-  const toggleRoomType = (id) => setSelectedRoomTypeIds((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
+  }, [selectedRoomObjs, masterData.roomTypes]);
 
   useEffect(() => {
-    function onDocClick(e) {
-      if (presetRef.current && !presetRef.current.contains(e.target)) setPresetOpen(false);
-    }
-    document.addEventListener("click", onDocClick);
-    return () => document.removeEventListener("click", onDocClick);
-  }, []);
+    setSelectedRoomTypeIds([...new Set(selectedRoomObjs.map((r) => r.roomTypeId))]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedRoomIds]);
 
-  const toggleRoom = (id) => setSelectedRoomIds((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
   const toggleMeal = (code) => setSelectedMealCodes((prev) => (prev.includes(code) ? prev.filter((x) => x !== code) : [...prev, code]));
   const toggleGroup = (key) => setCollapsedGroups((prev) => {
     const next = new Set(prev);
@@ -331,8 +327,6 @@ export default function CalendarPage() {
     return { min, max };
   }
 
-  const activePresetLabel = DATE_PRESETS.find((p) => p.key === preset)?.label;
-
   return (
     <>
       <PageHeader
@@ -349,29 +343,12 @@ export default function CalendarPage() {
 
       <div className="calendar-toolbar">
         <div className="flex items-center gap-2" style={{ flexWrap: "wrap" }}>
-          <div className="dropdown-select" ref={presetRef}>
-            <button type="button" className={`select-pill ${presetOpen ? "is-open" : ""}`} onClick={() => setPresetOpen((v) => !v)}>
-              <CalendarRange /> {activePresetLabel}
-              <ChevronDown className={`select-field__chevron ${presetOpen ? "is-rotated" : ""}`} style={{ width: 13, height: 13, marginLeft: 2 }} />
-            </button>
-            {presetOpen && (
-              <div className="dropdown-select__menu">
-                {DATE_PRESETS.map((p) => (
-                  <div
-                    key={p.key}
-                    className={`dropdown-select__item ${p.key === preset ? "is-active" : ""}`}
-                    onClick={() => {
-                      setPreset(p.key);
-                      setPresetOpen(false);
-                      if (p.key === "custom") setCustomOpen(true);
-                    }}
-                  >
-                    {p.label}
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+          <Select
+            className="calendar-preset-select"
+            value={preset}
+            onChange={(v) => { setPreset(v); if (v === "custom") setCustomOpen(true); }}
+            options={DATE_PRESETS.map((p) => ({ value: p.key, label: p.label }))}
+          />
 
           {preset === "custom" && (
             <button type="button" className="select-pill" onClick={() => setCustomOpen(true)}>
@@ -484,37 +461,33 @@ export default function CalendarPage() {
           </div>
           <div className="card filter-panel__section">
             <div className="filter-panel__label"><Building2 /> Property</div>
-            <div className="filter-option-list">
-              {properties.map((p) => (
-                <div key={p.id} className={`filter-option ${p.id === propertyId ? "is-active" : ""}`} onClick={() => setPropertyId(p.id)}>
-                  <span className="filter-option__avatar">{p.name.split(" ").map((w) => w[0]).slice(0, 2).join("")}</span>
-                  <span><div>{p.name}</div><div className="filter-option__meta">{p.id}</div></span>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="card filter-panel__section">
-            <div className="filter-panel__label"><Layers /> Room Type</div>
-            <div className="filter-option-list">
-              {roomTypeFacets.map((rt) => (
-                <label className="filter-option" key={rt.id}>
-                  <input type="checkbox" checked={selectedRoomTypeIds.includes(rt.id)} onChange={() => toggleRoomType(rt.id)} />
-                  <span>{rt.name}</span>
-                  <span className="badge badge-neutral">{rt.count}</span>
-                </label>
-              ))}
-            </div>
+            <Select
+              searchable
+              placeholder="Select a property..."
+              value={propertyId || ""}
+              onChange={setPropertyId}
+              options={properties.map((p) => ({ value: p.id, label: p.name }))}
+            />
           </div>
           <div className="card filter-panel__section">
             <div className="filter-panel__label"><BedDouble /> Rooms</div>
-            <div className="filter-option-list">
-              {rooms.map((r) => (
-                <label className="filter-option" key={r.id}>
-                  <input type="checkbox" checked={selectedRoomIds.includes(r.id)} onChange={() => toggleRoom(r.id)} />
-                  <span>{r.name}</span>
-                </label>
-              ))}
-            </div>
+            <MultiSelect
+              searchable
+              placeholder="All rooms"
+              values={selectedRoomIds}
+              onChange={setSelectedRoomIds}
+              options={rooms.map((r) => ({ value: r.id, label: r.name }))}
+            />
+          </div>
+          <div className="card filter-panel__section">
+            <div className="filter-panel__label"><Layers /> Room Type</div>
+            <MultiSelect
+              searchable
+              placeholder="All room types"
+              values={selectedRoomTypeIds}
+              onChange={setSelectedRoomTypeIds}
+              options={roomTypeFacets.map((rt) => ({ value: rt.id, label: `${rt.name} (${rt.count})` }))}
+            />
           </div>
           <div className="card filter-panel__section">
             <div className="filter-panel__label" style={{ justifyContent: "space-between", display: "flex", width: "100%" }}>

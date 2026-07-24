@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   Fingerprint, Building2, BedDouble, Users, Ruler, Layers, Pencil, ArrowRight,
-  Sparkles, Heart, StickyNote, Send, Ratio,
+  Sparkles, Heart, StickyNote, Send, Ratio, Utensils,
 } from "lucide-react";
 import PageHeader from "../../components/ui/PageHeader";
 import EmptyState from "../../components/ui/EmptyState";
@@ -22,6 +22,7 @@ export default function RoomDetailPage() {
 
   const room = getRoomById(id);
   const [editOpen, setEditOpen] = useState(false);
+  const [editStep, setEditStep] = useState("overview");
   const [noteDraft, setNoteDraft] = useState("");
 
   if (!room) {
@@ -37,6 +38,9 @@ export default function RoomDetailPage() {
   const ratePlans = getRatePlansByRoom(room.id);
   const amenities = (room.amenityIds || []).map((aid) => masterData.amenities.find((a) => a.id === aid)).filter(Boolean);
   const tags = (room.tagIds || []).map((tid) => masterData.tags.find((t) => t.id === tid)).filter(Boolean);
+  const allowedMealPlans = (room.allowedMealPlanCodes || [])
+    .map((code) => masterData.mealPlans.find((m) => m.code === code))
+    .filter(Boolean);
 
   const summary = [
     { label: "Room ID", value: room.id, icon: Fingerprint },
@@ -48,6 +52,7 @@ export default function RoomDetailPage() {
     { label: "Occupancy", value: `${room.maxAdults} Adults · ${room.maxChildren} Children`, icon: Users },
     { label: "Bed", value: lookupName(masterData.bedConfigurations, room.bedConfigurationId), icon: BedDouble },
     { label: "Area", value: `${room.areaValue} ${room.areaUnit}`, icon: Ruler },
+    { label: "Meal Plans", value: allowedMealPlans.length, icon: Utensils },
     { label: "Rate Plans", value: ratePlans.length, icon: Layers },
   ];
 
@@ -57,7 +62,7 @@ export default function RoomDetailPage() {
         crumbs={[{ label: "Dashboard", to: "/" }, { label: "Rooms", to: "/rooms" }, { label: room.name }]}
         title={room.name}
         subtitle={`${property?.name || ""} · ${room.id}`}
-        actions={<button className="btn btn-primary" onClick={() => setEditOpen(true)}><Pencil /> Edit Room</button>}
+        actions={<button className="btn btn-primary" onClick={() => { setEditStep("overview"); setEditOpen(true); }}><Pencil /> Edit Room</button>}
       />
 
       <section className="card" style={{ marginBottom: "var(--space-6)" }}>
@@ -109,6 +114,27 @@ export default function RoomDetailPage() {
               {amenities.length === 0 ? <p className="text-muted" style={{ fontSize: "var(--fs-sm)" }}>No amenities selected.</p> : (
                 <div className="chip-group">{amenities.map((a) => <span className="chip" key={a.id}>{a.name}</span>)}</div>
               )}
+            </div>
+          </section>
+
+          <section className="card">
+            <div className="card__header">
+              <div className="card__title"><Utensils style={{ width: 15, height: 15, display: "inline", marginRight: 6 }} />Allowed Meal Plans</div>
+              <button className="manage-inline-btn" onClick={() => { setEditStep("mealplans"); setEditOpen(true); }}><Pencil /> Manage</button>
+            </div>
+            <div className="card__body">
+              {allowedMealPlans.length === 0 ? (
+                <p className="text-muted" style={{ fontSize: "var(--fs-sm)" }}>No meal plans allowed yet — Rate Plans for this room will have none to choose from.</p>
+              ) : (
+                <div className="flex gap-2" style={{ flexWrap: "wrap" }}>
+                  {allowedMealPlans.map((m) => (
+                    <span key={m.code} className={`rp-mealplan-badge ${m.code}`} data-tooltip={m.name}>{m.code}</span>
+                  ))}
+                </div>
+              )}
+              <p className="field-hint" style={{ marginTop: "var(--space-3)" }}>
+                Only these meal plans can be configured on Rate Plans linked to this room.
+              </p>
             </div>
           </section>
 
@@ -190,7 +216,7 @@ export default function RoomDetailPage() {
         </aside>
       </div>
 
-      <RoomWizardModal open={editOpen} onClose={() => setEditOpen(false)} mode="edit" propertyId={room.propertyId} propertyName={property?.name} room={room} />
+      <RoomWizardModal open={editOpen} onClose={() => setEditOpen(false)} mode="edit" propertyId={room.propertyId} propertyName={property?.name} room={room} initialStep={editStep} />
     </>
   );
 }

@@ -1,11 +1,13 @@
 [
   {
     "id": "CO-0001",
-    "name": "Rate Hospitality Group",
-    "owner": { "name": "Admin", "email": "eglobeaditree@gmail.com", "role": "Company Owner" },
+    "name": "eGlobe Solutions",
+    "website": "https://www.eglobe-solutions.com/index.html",
+    "roleLevel": "Company",
+    "owner": { "name": "Admin", "email": "eglobeaditree@gmail.com", "role": "Company Admin" },
     "admins": [
-      { "name": "Rahul Menon", "email": "rahul.menon@rateiq.com", "role": "Company Admin" },
-      { "name": "Priya Nair", "email": "priya.nair@rateiq.com", "role": "Company Admin" }
+      { "name": "Rahul Menon", "email": "rahul.menon@rateiq.com", "role": "Company User" },
+      { "name": "Priya Nair", "email": "priya.nair@rateiq.com", "role": "Company User" }
     ]
   }
 ]

@@ -60,7 +60,12 @@ export default function SettingsPage() {
                 <div className="company-strip__logo">{company.name.split(" ").map((w) => w[0]).slice(0, 2).join("")}</div>
                 <div>
                   <div className="company-strip__name">{company.name}</div>
-                  <div className="company-strip__meta">Company ID: {company.id}</div>
+                  <div className="company-strip__meta">
+                    Company ID: {company.id}
+                    {company.website && (
+                      <> · <a href={company.website} target="_blank" rel="noreferrer" style={{ color: "var(--text-link)" }}>{company.website.replace(/^https?:\/\//, "")}</a></>
+                    )}
+                  </div>
                 </div>
               </div>
               <div>
@@ -72,7 +77,7 @@ export default function SettingsPage() {
                 </div>
               </div>
               <div>
-                <div className="filter-panel__label">Company Admins</div>
+                <div className="filter-panel__label">Company Users</div>
                 <div className="filter-option-list">
                   {company.admins.map((a) => (
                     <div className="filter-option" key={a.email} style={{ cursor: "default" }}>
@@ -86,9 +91,38 @@ export default function SettingsPage() {
             </div>
           </div>
         ) : active === "users" ? (
-          <ComingSoon title="User Management" desc="Company Owners will be able to invite and manage Company Admins and Property-level users once ASP.NET Identity is integrated." />
+          <ComingSoon title="User Management" desc="The Company Admin will be able to invite and manage Company Users here. Property Owner and Property Employee roles are reserved for a future release once ASP.NET Identity is integrated." />
         ) : active === "rbac" ? (
-          <ComingSoon title="Roles & RBAC" desc="Enterprise role-based access control across Company, Property and Room levels arrives with the backend release." />
+          <div className="card">
+            <div className="card__header">
+              <div>
+                <div className="card__title">Roles &amp; RBAC</div>
+                <div className="card__subtitle">Only the Company level is active today. The hierarchy below is reserved so Property-level access can be enabled later without a data-model change.</div>
+              </div>
+            </div>
+            <div className="card__body" style={{ display: "flex", flexDirection: "column", gap: "var(--space-3)" }}>
+              <div className="filter-option is-active" style={{ cursor: "default" }}>
+                <span className="filter-option__avatar"><ShieldCheck style={{ width: 14, height: 14 }} /></span>
+                <span><div>Company Admin</div><div className="filter-option__meta">Full access to every Property, Room and Rate Plan in {company.name}</div></span>
+                <span className="badge badge-success">Active</span>
+              </div>
+              <div className="filter-option" style={{ cursor: "default", marginLeft: "var(--space-6)" }}>
+                <span className="filter-option__avatar"><Users style={{ width: 14, height: 14 }} /></span>
+                <span><div>Company User</div><div className="filter-option__meta">Same workspace access as the Company Admin, scoped down as roles mature</div></span>
+                <span className="badge badge-success">Active</span>
+              </div>
+              <div className="filter-option" style={{ cursor: "default", marginLeft: "var(--space-8)", opacity: 0.6 }}>
+                <span className="filter-option__avatar"><Building2 style={{ width: 14, height: 14 }} /></span>
+                <span><div>Property Owner</div><div className="filter-option__meta">Reserved — will scope access to their own Property only</div></span>
+                <span className="badge badge-neutral">Reserved</span>
+              </div>
+              <div className="filter-option" style={{ cursor: "default", marginLeft: "calc(var(--space-8) + var(--space-4))", opacity: 0.6 }}>
+                <span className="filter-option__avatar"><Hammer style={{ width: 14, height: 14 }} /></span>
+                <span><div>Property Employee</div><div className="filter-option__meta">Reserved — will scope access to day-to-day operations on one Property</div></span>
+                <span className="badge badge-neutral">Reserved</span>
+              </div>
+            </div>
+          </div>
         ) : active === "integrations" ? (
           <ComingSoon title="Integrations" desc="HMS, REST API, and Python scraping service connections will be configured here once available." />
         ) : active === "notifications" ? (

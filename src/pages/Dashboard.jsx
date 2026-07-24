@@ -1,16 +1,12 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
 import {
   Download, Sparkles, Building2, BedDouble, Layers, Scale, TrendingUp, TrendingDown, Minus,
-  GitCompareArrows, Globe, ShoppingCart, LineChart, Star,
+  GitCompareArrows, Globe, ShoppingCart, LineChart,
 } from "lucide-react";
 import PageHeader from "../components/ui/PageHeader";
-import ChooseBenchmarkModal from "../components/properties/ChooseBenchmarkModal";
 import { useData } from "../context/DataContext";
 
 export default function Dashboard() {
-  const { company, properties, rooms, ratePlans, benchmarkProperty, competitors } = useData();
-  const [benchmarkModalOpen, setBenchmarkModalOpen] = useState(false);
+  const { company, properties, rooms, ratePlans, competitors } = useData();
 
   const activeProperties = properties.filter((p) => p.status === "Active").length;
   const roomCategories = rooms.length;
@@ -67,27 +63,6 @@ export default function Dashboard() {
           </span>
         </div>
       </section>
-
-      {benchmarkProperty && (
-        <section className="card" style={{ marginTop: "var(--space-6)" }}>
-          <div className="card__body" style={{ display: "flex", alignItems: "center", gap: "var(--space-4)" }}>
-            <div className="accordion__icon" style={{ width: 44, height: 44, background: "var(--grad-primary)", color: "#fff" }}>
-              <Star />
-            </div>
-            <div style={{ flex: 1 }}>
-              <div style={{ fontWeight: 650 }}>{benchmarkProperty.name} is "Our Property"</div>
-              <div className="text-muted" style={{ fontSize: "var(--fs-xs)" }}>
-                All rate comparisons, the calendar and analytics are measured against this property.
-              </div>
-            </div>
-            <button className="btn btn-secondary btn-sm" onClick={() => setBenchmarkModalOpen(true)}>Change Benchmark</button>
-          </div>
-        </section>
-      )}
-
-      {benchmarkModalOpen && (
-        <ChooseBenchmarkModal open={benchmarkModalOpen} onClose={() => setBenchmarkModalOpen(false)} />
-      )}
 
       <section className="card" style={{ marginTop: "var(--space-6)" }}>
         <div className="card__header">

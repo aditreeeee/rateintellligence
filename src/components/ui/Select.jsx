@@ -22,6 +22,7 @@ export default function Select({
   hint,
   searchable = false,
   disabled = false,
+  clearable = false,
   className = "",
 }) {
   const [open, setOpen] = useState(false);
@@ -113,6 +114,12 @@ export default function Select({
         aria-expanded={open}
       >
         <span className="select-field__value" title={selected?.label || ""}>{selected?.label || placeholder}</span>
+        {clearable && hasValue && (
+          <X
+            className="select-field__clear"
+            onClick={(e) => { e.stopPropagation(); onChange(""); }}
+          />
+        )}
         <ChevronDown className={`select-field__chevron ${open ? "is-rotated" : ""}`} />
       </button>
       {error && (

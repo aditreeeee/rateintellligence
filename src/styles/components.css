@@ -232,6 +232,12 @@
   transition: transform var(--dur-base) var(--ease-out);
 }
 .select-field__chevron.is-rotated { transform: rotate(180deg); color: var(--c-fresh-sky-600); }
+.select-field__clear {
+  width: 14px; height: 14px; color: var(--text-muted); flex-shrink: 0;
+  border-radius: 50%; cursor: pointer;
+  transition: background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
+}
+.select-field__clear:hover { background: rgba(226,89,107,0.16); color: var(--c-danger); }
 .select-field.is-invalid .select-field__trigger { border-color: var(--c-danger); box-shadow: var(--shadow-glow-danger); }
 
 /* Compact "plain" mode — no floating label, sized like a toolbar filter
@@ -243,6 +249,7 @@
   font-size: var(--fs-sm); gap: var(--space-2);
 }
 .select-field--plain .select-field__value { color: var(--text-primary); }
+.calendar-preset-select .select-field__trigger { min-width: 168px; }
 
 /* Floating panel — rendered via portal so it always escapes ancestor
    overflow/stacking (cards, modals, sticky headers). */
@@ -299,6 +306,44 @@
 .select-panel__item.is-selected { color: var(--c-yale-blue); font-weight: 640; }
 .select-panel__item.is-disabled { opacity: 0.45; cursor: not-allowed; }
 .select-panel__empty { padding: var(--space-5) var(--space-3); text-align: center; font-size: var(--fs-xs); color: var(--text-muted); }
+
+/* ---------- MultiSelect: chip trigger + Select All/Clear All row ---------- */
+.multiselect-field__trigger { min-height: 44px; height: auto; padding-top: 8px; padding-bottom: 8px; }
+.multiselect-field__chips { display: flex; flex-wrap: wrap; gap: 5px; flex: 1; min-width: 0; }
+.multiselect-chip {
+  display: inline-flex; align-items: center; gap: 5px;
+  max-width: 140px;
+  padding: 3px 6px 3px 9px; border-radius: var(--radius-pill);
+  background: var(--bg-chip); color: var(--c-yale-blue);
+  font-size: 11px; font-weight: 640;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.multiselect-chip--overflow { background: rgba(27,73,101,0.08); color: var(--text-secondary); padding-right: 9px; }
+.multiselect-chip__x {
+  width: 12px; height: 12px; flex-shrink: 0; cursor: pointer;
+  border-radius: 50%; color: var(--c-yale-blue);
+  transition: background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
+}
+.multiselect-chip__x:hover { background: rgba(226,89,107,0.18); color: var(--c-danger); }
+
+.select-panel__actions { display: flex; gap: 6px; padding: 2px 4px 8px; border-bottom: 1px solid var(--border-subtle); margin-bottom: 4px; }
+.select-panel__action {
+  flex: 1; text-align: center;
+  padding: 6px 8px; border-radius: var(--radius-sm);
+  font-size: 11px; font-weight: 640; color: var(--c-fresh-sky-600);
+  background: var(--bg-chip); border: none; cursor: pointer;
+  transition: background var(--dur-fast) var(--ease-out);
+}
+.select-panel__action:hover { background: rgba(98,182,203,0.28); }
+
+.multiselect-checkbox {
+  width: 16px; height: 16px; border-radius: 5px; flex-shrink: 0;
+  border: 1.5px solid var(--border-strong);
+  display: flex; align-items: center; justify-content: center;
+  transition: all var(--dur-fast) var(--ease-out);
+}
+.multiselect-checkbox svg { width: 11px; height: 11px; color: #fff; }
+.multiselect-checkbox.is-checked { background: var(--grad-primary); border-color: transparent; }
 .field-float select option { font-family: var(--font-sans); }
 
 .field-hint { font-size: 11px; color: var(--text-muted); margin-top: 6px; padding-left: 2px; }

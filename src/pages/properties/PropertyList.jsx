@@ -1,9 +1,16 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import { Plus, Star, Fingerprint, Pencil, ArrowUpRight, Filter, MapPin, ArrowUpDown } from "lucide-react";
+import { useMemo, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  Plus, Star, Fingerprint, Pencil, ArrowUpRight, Trash2, AlertTriangle,
+  MapPin, Filter, LayoutGrid, List,
+} from "lucide-react";
 import PageHeader from "../../components/ui/PageHeader";
+import EmptyState from "../../components/ui/EmptyState";
+import Modal from "../../components/ui/Modal";
+import Select from "../../components/ui/Select";
 import ChooseBenchmarkModal from "../../components/properties/ChooseBenchmarkModal";
 import { useData } from "../../context/DataContext";
+import { useToast } from "../../context/ToastContext";
 
 function StarRow({ n }) {
   return (
@@ -15,9 +22,46 @@ function StarRow({ n }) {
   );
 }
 
+const SORT_OPTIONS = [
+  { value: "updated", label: "Recently updated" },
+  { value: "name", label: "Name (A–Z)" },
+  { value: "stars", label: "Star category (high–low)" },
+];
+
 export default function PropertyList() {
-  const { company, properties, benchmarkProperty, getRoomsByProperty, getRatePlansByProperty } = useData();
+  const { company, properties, getRoomsByProperty, getRatePlansByProperty, deleteProperty } = useData();
+  const toast = useToast();
+  const navigate = useNavigate();
+
   const [benchmarkModalOpen, setBenchmarkModalOpen] = useState(false);
+  const [view, setView] = useState("grid");
+  const [statusFilter, setStatusFilter] = useState("All");
+  const [cityFilter, setCityFilter] = useState("All");
+  const [countryFilter, setCountryFilter] = useState("All");
+  const [sortBy, setSortBy] = useState("updated");
+  const [confirmDelete, setConfirmDelete] = useState(null);
+
+  const cities = useMemo(() => [...new Set(properties.map((p) => p.city))].sort(), [properties]);
+  const countries = useMemo(() => [...new Set(properties.map((p) => p.country))].sort(), [properties]);
+
+  const filtered = useMemo(() => {
+    let list = properties;
+    if (statusFilter !== "All") list = list.filter((p) => p.status === statusFilter);
+    if (cityFilter !== "All") list = list.filter((p) => p.city === cityFilter);
+    if (countryFilter !== "All") list = list.filter((p) => p.country === countryFilter);
+    list = [...list].sort((a, b) => {
+      if (sortBy === "name") return a.name.localeCompare(b.name);
+      if (sortBy === "stars") return b.starCategory - a.starCategory;
+      return new Date(b.updatedAt) - new Date(a.updatedAt);
+    });
+    return list;
+  }, [properties, statusFilter, cityFilter, countryFilter, sortBy]);
+
+  function handleDelete(p) {
+    deleteProperty(p.id);
+    toast({ title: "Property deleted", message: `${p.name} and its rooms/rate plans were removed.`, type: "info" });
+    setConfirmDelete(null);
+  }
 
   return (
     <>
@@ -35,90 +79,159 @@ export default function PropertyList() {
         }
       />
 
-      <div className="card company-strip">
-        <div className="company-strip__logo">{company.name.split(" ").map((w) => w[0]).slice(0, 2).join("")}</div>
-        <div>
-          <div className="company-strip__name">{company.name}</div>
-          <div className="company-strip__meta">Company Owner: {company.owner.name} · {company.admins.length} Company Admins</div>
-        </div>
-        <div className="company-strip__people">
-          {benchmarkProperty && (
-            <span className="benchmark-badge" style={{ marginRight: "var(--space-4)" }} data-tooltip="Used across Dashboard, Calendar and Rate Comparison">
-              <Star /> Our Property: {benchmarkProperty.name}
-            </span>
-          )}
-          <div className="people-stack">
-            {[company.owner, ...company.admins].map((p) => (
-              <div className="people-stack__avatar" key={p.email} data-tooltip={`${p.name} · ${p.role}`}>
-                {p.name.split(" ").map((w) => w[0]).slice(0, 2).join("")}
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
       <div className="toolbar">
         <div className="filter-bar">
-          <div className="select-pill"><Filter /> All statuses</div>
-          <div className="select-pill"><MapPin /> All cities</div>
-          <div className="select-pill"><ArrowUpDown /> Recently updated</div>
+          <Select
+            value={statusFilter}
+            onChange={setStatusFilter}
+            options={[
+              { value: "All", label: "All statuses" },
+              { value: "Active", label: "Active" },
+              { value: "Inactive", label: "Inactive" },
+            ]}
+          />
+          <Select
+            searchable
+            value={cityFilter}
+            onChange={setCityFilter}
+            options={[{ value: "All", label: "All cities" }, ...cities.map((c) => ({ value: c, label: c }))]}
+          />
+          <Select
+            searchable
+            value={countryFilter}
+            onChange={setCountryFilter}
+            options={[{ value: "All", label: "All countries" }, ...countries.map((c) => ({ value: c, label: c }))]}
+          />
+          <Select value={sortBy} onChange={setSortBy} options={SORT_OPTIONS} />
+        </div>
+
+        <div className="view-toggle" role="tablist" aria-label="View mode">
+          <button type="button" className={view === "grid" ? "is-active" : ""} onClick={() => setView("grid")} data-tooltip="Grid view">
+            <LayoutGrid />
+          </button>
+          <button type="button" className={view === "list" ? "is-active" : ""} onClick={() => setView("list")} data-tooltip="List view">
+            <List />
+          </button>
         </div>
       </div>
 
-      <section className="card-grid" aria-label="Property list">
-        {properties.map((p) => (
-          <Link to={`/properties/${p.id}`} className="card card-hover entity-card entity-card--clickable" key={p.id}>
-            <div className="entity-card__top">
-              <div className="entity-card__avatar">{p.name.split(" ").map((w) => w[0]).slice(0, 2).join("")}</div>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div className="entity-card__title">{p.name}</div>
-                <div className="entity-card__meta"><MapPin style={{ width: 11, height: 11 }} /> {p.city}, {p.country}</div>
+      {filtered.length === 0 ? (
+        <div className="card">
+          <EmptyState
+            icon={Filter}
+            title="No properties match your filters"
+            desc="Try adjusting the status, city or country filter."
+          />
+        </div>
+      ) : view === "grid" ? (
+        <section className="card-grid" aria-label="Property list">
+          {filtered.map((p) => (
+            <Link to={`/properties/${p.id}`} className="card card-hover entity-card entity-card--clickable" key={p.id}>
+              <div className="entity-card__top">
+                <div className="entity-card__avatar">{p.name.split(" ").map((w) => w[0]).slice(0, 2).join("")}</div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div className="entity-card__title">{p.name}</div>
+                  <div className="entity-card__meta"><MapPin style={{ width: 11, height: 11 }} /> {p.city}, {p.country}</div>
+                </div>
+                {p.status === "Active" ? (
+                  <span className="badge badge-success pulse">Active</span>
+                ) : (
+                  <span className="badge badge-neutral">Inactive</span>
+                )}
               </div>
-              {p.status === "Active" ? (
-                <span className="badge badge-success pulse">Active</span>
-              ) : (
-                <span className="badge badge-neutral">Inactive</span>
-              )}
-            </div>
 
-            <div className="flex items-center gap-2" style={{ flexWrap: "wrap" }}>
-              <span className="property-id-chip locked"><Fingerprint /> {p.id}</span>
-              {p.isBenchmark && <span className="benchmark-badge"><Star /> Our Property</span>}
-            </div>
-
-            <StarRow n={p.starCategory} />
-            <p className="entity-card__desc">{p.description}</p>
-
-            <div className="entity-card__stats">
-              <div><strong>{getRoomsByProperty(p.id).length}</strong>Rooms</div>
-              <div><strong>{getRatePlansByProperty(p.id).length}</strong>Rate Plans</div>
-              <div><strong>{p.currency.split(" ")[0]}</strong>Currency</div>
-            </div>
-
-            <div className="entity-card__footer">
-              <span className="text-muted" style={{ fontSize: "var(--fs-xs)" }}>Updated {p.updatedAt}</span>
-              <div className="entity-card__actions">
-                <Link
-                  to={`/properties/${p.id}`}
-                  className="icon-btn btn-sm"
-                  data-tooltip="View & Edit"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <Pencil />
-                </Link>
-                <Link
-                  to="/rooms"
-                  className="icon-btn btn-sm"
-                  data-tooltip="View rooms"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <ArrowUpRight />
-                </Link>
+              <div className="flex items-center gap-2" style={{ flexWrap: "wrap" }}>
+                <span className="property-id-chip locked"><Fingerprint /> {p.id}</span>
+                {p.isBenchmark && <span className="benchmark-badge"><Star /> Our Property</span>}
               </div>
-            </div>
-          </Link>
-        ))}
-      </section>
+
+              <StarRow n={p.starCategory} />
+              <p className="entity-card__desc">{p.description}</p>
+
+              <div className="entity-card__stats">
+                <div><strong>{getRoomsByProperty(p.id).length}</strong>Rooms</div>
+                <div><strong>{getRatePlansByProperty(p.id).length}</strong>Rate Plans</div>
+                <div><strong>{p.currency.split(" ")[0]}</strong>Currency</div>
+              </div>
+
+              <div className="entity-card__footer">
+                <span className="text-muted" style={{ fontSize: "var(--fs-xs)" }}>Updated {p.updatedAt}</span>
+                <div className="entity-card__actions">
+                  <Link to={`/properties/${p.id}`} className="icon-btn btn-sm" data-tooltip="View & Edit" onClick={(e) => e.stopPropagation()}>
+                    <Pencil />
+                  </Link>
+                  <Link to="/rooms" className="icon-btn btn-sm" data-tooltip="View rooms" onClick={(e) => e.stopPropagation()}>
+                    <ArrowUpRight />
+                  </Link>
+                  <button
+                    type="button"
+                    className="icon-btn btn-sm"
+                    data-tooltip="Delete"
+                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); setConfirmDelete(p); }}
+                  >
+                    <Trash2 />
+                  </button>
+                </div>
+              </div>
+            </Link>
+          ))}
+        </section>
+      ) : (
+        <div className="table-wrap card">
+          <table className="data-table is-compact">
+            <thead>
+              <tr>
+                <th>Property</th><th>Location</th><th>Star</th><th>Rooms</th><th>Rate Plans</th><th>Status</th><th>Updated</th><th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {filtered.map((p) => (
+                <tr key={p.id} style={{ cursor: "pointer" }} onClick={() => navigate(`/properties/${p.id}`)}>
+                  <td>
+                    <div className="flex items-center gap-3">
+                      <div className="entity-card__avatar" style={{ width: 36, height: 36, fontSize: 11 }}>{p.name.split(" ").map((w) => w[0]).slice(0, 2).join("")}</div>
+                      <div>
+                        <div className="cell-strong">{p.name}{p.isBenchmark && <Star style={{ width: 12, height: 12, display: "inline", marginLeft: 6, color: "var(--c-warning)", fill: "var(--c-warning)" }} />}</div>
+                        <div className="cell-muted" style={{ fontSize: "var(--fs-xs)" }}>{p.id}</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="cell-muted">{p.city}, {p.country}</td>
+                  <td>{p.starCategory}★</td>
+                  <td>{getRoomsByProperty(p.id).length}</td>
+                  <td>{getRatePlansByProperty(p.id).length}</td>
+                  <td>{p.status === "Active" ? <span className="badge badge-success">Active</span> : <span className="badge badge-neutral">Inactive</span>}</td>
+                  <td className="cell-muted">{p.updatedAt}</td>
+                  <td>
+                    <div className="row-actions">
+                      <Link to={`/properties/${p.id}`} className="icon-btn btn-sm" data-tooltip="View & Edit" onClick={(e) => e.stopPropagation()}><Pencil /></Link>
+                      <Link to="/rooms" className="icon-btn btn-sm" data-tooltip="View rooms" onClick={(e) => e.stopPropagation()}><ArrowUpRight /></Link>
+                      <button type="button" className="icon-btn btn-sm" data-tooltip="Delete" onClick={(e) => { e.stopPropagation(); setConfirmDelete(p); }}><Trash2 /></button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      <Modal
+        open={!!confirmDelete}
+        onClose={() => setConfirmDelete(null)}
+        title="Delete Property"
+        subtitle={`Delete "${confirmDelete?.name}"?`}
+        footer={
+          <>
+            <button className="btn btn-ghost" onClick={() => setConfirmDelete(null)}>Cancel</button>
+            <button className="btn btn-danger" onClick={() => handleDelete(confirmDelete)}><Trash2 /> Delete</button>
+          </>
+        }
+      >
+        <p className="flex items-center gap-2" style={{ color: "var(--c-danger)" }}>
+          <AlertTriangle style={{ width: 16, height: 16 }} /> This will also remove every room and rate plan linked to this property. This action cannot be undone.
+        </p>
+      </Modal>
 
       <ChooseBenchmarkModal open={benchmarkModalOpen} onClose={() => setBenchmarkModalOpen(false)} />
     </>

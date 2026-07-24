@@ -144,30 +144,40 @@ export default function RatePlansPage() {
         <aside className="filter-panel">
           <div className="card filter-panel__section">
             <div className="filter-panel__label"><Building2 /> Property</div>
-            <div className="filter-option-list">
-              {properties.map((p) => (
-                <div key={p.id} className={`filter-option ${p.id === propertyId ? "is-active" : ""}`} onClick={() => selectProperty(p.id)}>
-                  <span className="filter-option__avatar">{p.name.split(" ").map((w) => w[0]).slice(0, 2).join("")}</span>
-                  <span><div>{p.name}</div><div className="filter-option__meta">{p.id}</div></span>
-                  <span className="badge badge-neutral">{getRatePlansByProperty(p.id).length}</span>
-                </div>
-              ))}
-            </div>
+            <Select
+              searchable
+              placeholder="Select a property..."
+              value={propertyId || ""}
+              onChange={selectProperty}
+              options={properties.map((p) => ({ value: p.id, label: `${p.name} (${getRatePlansByProperty(p.id).length} plans)` }))}
+            />
+            {activeProperty && (
+              <div className="filter-option is-active" style={{ cursor: "default", marginTop: "var(--space-3)" }}>
+                <span className="filter-option__avatar">{activeProperty.name.split(" ").map((w) => w[0]).slice(0, 2).join("")}</span>
+                <span><div>{activeProperty.name}</div><div className="filter-option__meta">{activeProperty.id}</div></span>
+              </div>
+            )}
           </div>
           <div className="card filter-panel__section">
             <div className="filter-panel__label"><BedDouble /> Room</div>
             {propertyRooms.length === 0 ? (
               <div className="filter-empty">No rooms configured for this property yet.</div>
             ) : (
-              <div className="filter-option-list">
-                {propertyRooms.map((r) => (
-                  <div key={r.id} className={`filter-option ${r.id === roomId ? "is-active" : ""}`} onClick={() => selectRoom(r.id)}>
-                    <span className="filter-option__avatar">{r.name.split(" ").map((w) => w[0]).slice(0, 2).join("")}</span>
-                    <span><div>{r.name}</div><div className="filter-option__meta">{r.id}</div></span>
-                    <span className="badge badge-neutral">{allPlans.filter((rp) => (rp.roomIds || []).includes(r.id)).length}</span>
+              <>
+                <Select
+                  searchable
+                  placeholder="Select a room..."
+                  value={roomId || ""}
+                  onChange={selectRoom}
+                  options={propertyRooms.map((r) => ({ value: r.id, label: `${r.name} (${allPlans.filter((rp) => (rp.roomIds || []).includes(r.id)).length} plans)` }))}
+                />
+                {roomId && (
+                  <div className="filter-option is-active" style={{ cursor: "default", marginTop: "var(--space-3)" }}>
+                    <span className="filter-option__avatar">{getRoomById(roomId)?.name.split(" ").map((w) => w[0]).slice(0, 2).join("")}</span>
+                    <span><div>{getRoomById(roomId)?.name}</div><div className="filter-option__meta">{roomId}</div></span>
                   </div>
-                ))}
-              </div>
+                )}
+              </>
             )}
           </div>
         </aside>
@@ -307,6 +317,7 @@ export default function RatePlansPage() {
         propertyId={propertyId}
         propertyName={activeProperty?.name}
         ratePlan={activePlan}
+        initialRoomIds={wizardMode === "create" && roomId ? [roomId] : []}
       />
 
       <Modal
