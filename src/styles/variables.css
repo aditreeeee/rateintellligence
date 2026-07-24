@@ -32,15 +32,24 @@
   --c-pricier: #e2596b;
 
   /* ---- Surface / background system ---- */
-  --bg-app: linear-gradient(160deg, #f3fbfc 0%, #eaf5f8 28%, #eef6fb 55%, #f6fafd 100%);
-  --bg-sidebar: linear-gradient(195deg, var(--c-yale-blue) 0%, var(--c-yale-blue-900) 100%);
+  --bg-app:
+    radial-gradient(1100px 620px at 8% -8%, rgba(190,233,232,0.55) 0%, transparent 60%),
+    radial-gradient(900px 700px at 108% 8%, rgba(202,233,255,0.6) 0%, transparent 55%),
+    linear-gradient(160deg, #f3fbfc 0%, #eaf5f8 28%, #eef6fb 55%, #f6fafd 100%);
+  --bg-sidebar: linear-gradient(200deg, var(--c-yale-blue) 0%, #10344a 55%, var(--c-yale-blue-900) 100%);
   --bg-topbar: rgba(255, 255, 255, 0.66);
   --bg-card: rgba(255, 255, 255, 0.72);
   --bg-card-solid: #ffffff;
-  --bg-card-hover: rgba(255, 255, 255, 0.9);
+  --bg-card-hover: rgba(255, 255, 255, 0.92);
   --bg-input: rgba(255, 255, 255, 0.65);
   --bg-chip: rgba(98, 182, 203, 0.14);
   --bg-overlay: rgba(13, 39, 56, 0.45);
+
+  /* ---- Accent gradient set (cycled across KPI/stat surfaces for variety) ---- */
+  --grad-accent-1: linear-gradient(135deg, #5fa8d3, #4a7fe0);
+  --grad-accent-2: linear-gradient(135deg, #2fb88a, #62b6cb);
+  --grad-accent-3: linear-gradient(135deg, #e7a339, #e2596b);
+  --grad-accent-4: linear-gradient(135deg, #8b7ff0, #5fa8d3);
 
   /* ---- Text ---- */
   --text-primary: #10222e;
@@ -57,15 +66,16 @@
   --border-focus: var(--c-fresh-sky);
 
   /* ---- Glass effect ---- */
-  --glass-blur: 18px;
-  --glass-border: 1px solid rgba(255, 255, 255, 0.5);
-  --glass-shadow: 0 1px 1px rgba(27, 73, 101, 0.04), 0 8px 24px -8px rgba(27, 73, 101, 0.14);
+  --glass-blur: 20px;
+  --glass-border: 1px solid rgba(255, 255, 255, 0.55);
+  --glass-shadow: 0 1px 1px rgba(27, 73, 101, 0.04), 0 1px 0 rgba(255,255,255,0.6) inset, 0 10px 28px -10px rgba(27, 73, 101, 0.16);
 
-  /* ---- Elevation shadows ---- */
+  /* ---- Elevation shadows (layered: ambient + direct, for real depth) ---- */
   --shadow-xs: 0 1px 2px rgba(16, 34, 46, 0.06);
-  --shadow-sm: 0 2px 8px rgba(16, 34, 46, 0.06), 0 1px 2px rgba(16, 34, 46, 0.04);
-  --shadow-md: 0 6px 20px -4px rgba(16, 34, 46, 0.12), 0 2px 6px rgba(16, 34, 46, 0.06);
-  --shadow-lg: 0 16px 40px -12px rgba(16, 34, 46, 0.22), 0 4px 12px rgba(16, 34, 46, 0.08);
+  --shadow-sm: 0 2px 8px rgba(16, 34, 46, 0.07), 0 1px 2px rgba(16, 34, 46, 0.04);
+  --shadow-md: 0 10px 24px -8px rgba(16, 34, 46, 0.16), 0 3px 8px rgba(16, 34, 46, 0.06);
+  --shadow-lg: 0 22px 48px -14px rgba(16, 34, 46, 0.26), 0 6px 16px -2px rgba(16, 34, 46, 0.1);
+  --shadow-xl: 0 32px 64px -18px rgba(13, 39, 56, 0.32), 0 10px 24px -4px rgba(13, 39, 56, 0.12);
   --shadow-glow-sky: 0 0 0 4px rgba(95, 168, 211, 0.16);
   --shadow-glow-danger: 0 0 0 4px rgba(226, 89, 107, 0.14);
 

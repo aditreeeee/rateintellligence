@@ -1,4 +1,5 @@
 import { Fragment, memo, useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import {
   Building2, BedDouble, Utensils, Upload, WandSparkles, X, Check, Settings2,
   ChevronDown, ChevronRight, ChevronLeft, Layers, ArrowDownNarrowWide, ArrowUpNarrowWide, Pencil,
@@ -147,6 +148,8 @@ const GroupHeaderRow = memo(function GroupHeaderRow({ group, dates, isCollapsed,
 export default function CalendarPage() {
   const { properties, getRoomsByProperty, getRatePlansByRoom, masterData } = useData();
   const toast = useToast();
+  const [searchParams] = useSearchParams();
+  const deepLinkRoomId = useRef(searchParams.get("roomId")).current;
   // Stable reference for the lifetime of the page — recreating this on every
   // render would defeat the RateRow/GroupHeaderRow memoization below.
   const today = useMemo(() => new Date(), []);
@@ -202,7 +205,7 @@ export default function CalendarPage() {
 
   const occupancies = masterData.occupancies.filter((o) => o.status === "Active");
 
-  const [propertyId, setPropertyId] = useState(properties[0]?.id);
+  const [propertyId, setPropertyId] = useState(searchParams.get("propertyId") || properties[0]?.id);
   const rooms = useMemo(() => getRoomsByProperty(propertyId), [getRoomsByProperty, propertyId]);
   const [selectedRoomIds, setSelectedRoomIds] = useState([]);
   const [selectedRoomTypeIds, setSelectedRoomTypeIds] = useState([]);
@@ -212,10 +215,17 @@ export default function CalendarPage() {
   const [highlightHighest, setHighlightHighest] = useState(false);
 
   // Property -> Room: selecting a property resets the Room picker to every
-  // room that property has.
+  // room that property has — unless a specific room was deep-linked (e.g.
+  // from the ⌘K command palette or "Manage Rate Plans"), in which case only
+  // that room is pre-selected the first time.
   useEffect(() => {
     const propRooms = getRoomsByProperty(propertyId);
-    setSelectedRoomIds(propRooms.map((r) => r.id));
+    if (deepLinkRoomId && propRooms.some((r) => r.id === deepLinkRoomId)) {
+      setSelectedRoomIds([deepLinkRoomId]);
+    } else {
+      setSelectedRoomIds(propRooms.map((r) => r.id));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [propertyId, getRoomsByProperty]);
 
   // Room -> Room Type: the Room Type picker is scoped to whatever room
@@ -327,10 +337,21 @@ export default function CalendarPage() {
     return { min, max };
   }
 
+  // Breadcrumb mirrors the live Property > Room selection chain driving the
+  // filter panel and the matrix below it.
+  const activeProperty = properties.find((p) => p.id === propertyId);
+  const selectionCrumbs = [
+    { label: "Dashboard", to: "/" },
+    { label: "Calendar", to: activeProperty ? "/calendar" : undefined },
+  ];
+  if (activeProperty) selectionCrumbs.push({ label: activeProperty.name, to: selectedRoomIds.length === 1 ? "/calendar" : undefined });
+  if (selectedRoomIds.length === 1) selectionCrumbs.push({ label: rooms.find((r) => r.id === selectedRoomIds[0])?.name || "" });
+  else if (selectedRoomIds.length > 1) selectionCrumbs.push({ label: `${selectedRoomIds.length} rooms` });
+
   return (
     <>
       <PageHeader
-        crumbs={[{ label: "Dashboard", to: "/" }, { label: "Calendar" }]}
+        crumbs={selectionCrumbs}
         title="Rate Calendar"
         subtitle="Room + meal plan rates nested by occupancy, across dates. Click any rate cell to edit it."
         actions={

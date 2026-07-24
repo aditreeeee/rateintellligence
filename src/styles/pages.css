@@ -2,6 +2,67 @@
    Page-specific styles
    ========================================================================== */
 
+/* ---------- Dashboard hero ---------- */
+.dash-hero {
+  position: relative;
+  border-radius: var(--radius-xl);
+  padding: var(--space-8) var(--space-8) var(--space-7);
+  margin-bottom: var(--space-7);
+  background: linear-gradient(135deg, rgba(27,73,101,0.96) 0%, rgba(20,58,82,0.96) 55%, rgba(13,39,56,0.98) 100%);
+  color: var(--text-inverse);
+  overflow: hidden;
+  box-shadow: var(--shadow-xl);
+}
+.dash-hero__glow {
+  position: absolute; inset: -40% -10% auto auto; width: 60%; height: 140%;
+  background: radial-gradient(circle, rgba(95,168,211,0.35) 0%, transparent 65%);
+  pointer-events: none;
+}
+.dash-hero__row { position: relative; display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-6); flex-wrap: wrap; }
+.dash-hero .breadcrumbs .current { color: var(--text-inverse-muted); }
+.dash-hero__title { font-size: var(--fs-2xl); font-weight: 700; letter-spacing: -0.02em; color: #fff; margin: 0; }
+.dash-hero__wave { display: inline-block; animation: wave 2.2s ease-in-out infinite; transform-origin: 70% 70%; }
+@keyframes wave { 0%, 60%, 100% { transform: rotate(0deg); } 10% { transform: rotate(14deg); } 20% { transform: rotate(-8deg); } 30% { transform: rotate(14deg); } 40% { transform: rotate(-4deg); } }
+.dash-hero__subtitle { font-size: var(--fs-base); color: var(--text-inverse-muted); margin-top: var(--space-2); max-width: 520px; }
+.dash-hero__actions { position: relative; display: flex; gap: var(--space-3); flex-shrink: 0; }
+.dash-hero__actions .btn-secondary { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.22); color: #fff; backdrop-filter: blur(8px); }
+.dash-hero__actions .btn-secondary:hover { background: rgba(255,255,255,0.18); border-color: rgba(255,255,255,0.35); }
+
+.dash-hero__featured {
+  position: relative; margin-top: var(--space-7);
+  display: flex; align-items: center; gap: var(--space-5);
+  padding: var(--space-5) var(--space-6);
+  border-radius: var(--radius-lg);
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.16);
+  backdrop-filter: blur(10px);
+}
+.dash-hero__featured-icon {
+  width: 44px; height: 44px; border-radius: 12px; flex-shrink: 0;
+  background: var(--grad-primary); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 8px 18px -6px rgba(95,168,211,0.55);
+}
+.dash-hero__featured-icon svg { width: 20px; height: 20px; }
+.dash-hero__featured-label { font-size: var(--fs-xs); font-weight: 640; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-inverse-muted); }
+.dash-hero__featured-value { font-size: var(--fs-2xl); font-weight: 700; color: #fff; letter-spacing: -0.02em; margin-top: 2px; display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-2); }
+.dash-hero__featured-link {
+  flex-shrink: 0; display: inline-flex; align-items: center; gap: 6px;
+  font-size: var(--fs-sm); font-weight: 640; color: #fff;
+  padding: 9px 16px; border-radius: var(--radius-pill);
+  background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.24);
+  transition: all var(--dur-fast) var(--ease-out);
+}
+.dash-hero__featured-link:hover { background: rgba(255,255,255,0.24); transform: translateX(2px); }
+@media (max-width: 720px) {
+  .dash-hero__featured { flex-wrap: wrap; }
+  .dash-hero__featured-link { width: 100%; justify-content: center; }
+}
+
+/* Rate Intelligence "coming soon" module tiles */
+.module-tile { padding: var(--space-5); }
+.module-tile__icon { margin-bottom: var(--space-3); background: var(--grad-accent); }
+
 /* ---------- Property / Room list cards ---------- */
 .entity-card { padding: var(--space-5); display: flex; flex-direction: column; gap: var(--space-4); }
 .entity-card--clickable { cursor: pointer; }
@@ -22,7 +83,54 @@
 .star-row { display: flex; gap: 2px; }
 .star-row svg { width: 13px; height: 13px; color: var(--c-warning); fill: var(--c-warning); }
 
-.toolbar { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); flex-wrap: wrap; margin-bottom: var(--space-6); }
+.toolbar {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); flex-wrap: wrap;
+  margin-bottom: var(--space-6);
+  padding: var(--space-3) var(--space-4);
+  background: rgba(255,255,255,0.4);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* ---------- Premium live-search field (Properties/Rooms/Rate Plans) ---------- */
+.search-box { position: relative; display: flex; align-items: center; flex-shrink: 0; }
+.search-box__icon { position: absolute; left: 12px; width: 14px; height: 14px; color: var(--text-muted); pointer-events: none; }
+.search-box input {
+  width: 100%; height: 38px;
+  padding: 0 32px 0 34px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-default);
+  background: var(--bg-card);
+  font-size: var(--fs-sm); color: var(--text-primary);
+  transition: all var(--dur-fast) var(--ease-out);
+}
+.search-box input:hover { background: #fff; border-color: var(--border-strong); }
+.search-box input:focus { outline: none; border-color: var(--c-fresh-sky); background: #fff; box-shadow: var(--shadow-glow-sky); }
+.search-box__clear {
+  position: absolute; right: 10px; width: 16px; height: 16px; color: var(--text-muted);
+  cursor: pointer; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  transition: all var(--dur-fast) var(--ease-out);
+}
+.search-box__clear svg { width: 12px; height: 12px; }
+.search-box__clear:hover { background: rgba(226,89,107,0.16); color: var(--c-danger); }
+.search-box__panel {
+  z-index: var(--z-tooltip);
+  background: rgba(255,255,255,0.97);
+  backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  padding: 6px;
+  max-height: 320px; overflow-y: auto;
+  animation: select-panel-in var(--dur-base) var(--ease-spring);
+}
+.search-box__meta {
+  font-family: "SFMono-Regular", ui-monospace, Menlo, Consolas, monospace;
+  font-size: 10px; color: var(--text-muted); flex-shrink: 0; margin-left: var(--space-3);
+}
 .view-toggle { display: flex; background: var(--bg-card); border: 1px solid var(--border-default); border-radius: var(--radius-md); padding: 3px; gap: 2px; }
 .view-toggle button { width: 32px; height: 30px; display: flex; align-items: center; justify-content: center; border-radius: 9px; color: var(--text-muted); cursor: pointer; border: none; background: transparent; transition: all var(--dur-fast); }
 .view-toggle button svg { width: 15px; height: 15px; }
@@ -176,6 +284,11 @@ table.rate-calendar { border-collapse: separate; border-spacing: 0; font-size: v
 .rate-calendar .row-head__room { font-weight: 700; font-size: var(--fs-sm); }
 .rate-calendar .row-head__meal { font-size: 11px; font-weight: 500; color: var(--text-muted); margin-top: 1px; }
 .rate-calendar tbody tr:hover .row-head { background: rgba(202,233,255,0.45); }
+/* Cross-column hover: tint the whole row (every date cell), not just the
+   frozen taxonomy column, so a rate is easy to track horizontally across
+   the full date range. The single hovered cell still gets its own stronger
+   highlight from .rate-cell:hover below, layered on top. */
+.rate-calendar tbody tr:hover td.rate-cell:not(.rate-cell--group) { background: rgba(148,163,184,0.14); }
 
 .rate-cell {
   padding: var(--space-3) var(--space-4); text-align: center; cursor: pointer; white-space: nowrap;
@@ -184,7 +297,10 @@ table.rate-calendar { border-collapse: separate; border-spacing: 0; font-size: v
   transition: background var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast);
   position: relative;
 }
-.rate-cell:hover { background: rgba(95,168,211,0.16); transform: scale(1.04); box-shadow: inset 0 0 0 1px var(--c-fresh-sky); border-radius: 8px; z-index: 1; }
+.rate-cell:hover,
+.rate-calendar tbody tr:hover td.rate-cell:hover {
+  background: rgba(95,168,211,0.22); transform: scale(1.04); box-shadow: inset 0 0 0 1px var(--c-fresh-sky); border-radius: 8px; z-index: 1;
+}
 /* Instant press feedback — pure CSS, so the click feels immediate even
    before React processes the resulting state update. */
 .rate-cell:active { transform: scale(0.95); transition-duration: 80ms; background: rgba(95,168,211,0.26); }

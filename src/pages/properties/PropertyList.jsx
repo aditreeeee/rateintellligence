@@ -8,6 +8,7 @@ import PageHeader from "../../components/ui/PageHeader";
 import EmptyState from "../../components/ui/EmptyState";
 import Modal from "../../components/ui/Modal";
 import Select from "../../components/ui/Select";
+import SearchBox from "../../components/ui/SearchBox";
 import ChooseBenchmarkModal from "../../components/properties/ChooseBenchmarkModal";
 import { useData } from "../../context/DataContext";
 import { useToast } from "../../context/ToastContext";
@@ -34,7 +35,8 @@ export default function PropertyList() {
   const navigate = useNavigate();
 
   const [benchmarkModalOpen, setBenchmarkModalOpen] = useState(false);
-  const [view, setView] = useState("grid");
+  const [view, setView] = useState(() => localStorage.getItem("rateiq_properties_view") || "grid");
+  const [query, setQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
   const [cityFilter, setCityFilter] = useState("All");
   const [countryFilter, setCountryFilter] = useState("All");
@@ -46,6 +48,8 @@ export default function PropertyList() {
 
   const filtered = useMemo(() => {
     let list = properties;
+    const q = query.trim().toLowerCase();
+    if (q) list = list.filter((p) => p.name.toLowerCase().includes(q) || p.id.toLowerCase().includes(q));
     if (statusFilter !== "All") list = list.filter((p) => p.status === statusFilter);
     if (cityFilter !== "All") list = list.filter((p) => p.city === cityFilter);
     if (countryFilter !== "All") list = list.filter((p) => p.country === countryFilter);
@@ -55,7 +59,7 @@ export default function PropertyList() {
       return new Date(b.updatedAt) - new Date(a.updatedAt);
     });
     return list;
-  }, [properties, statusFilter, cityFilter, countryFilter, sortBy]);
+  }, [properties, query, statusFilter, cityFilter, countryFilter, sortBy]);
 
   function handleDelete(p) {
     deleteProperty(p.id);
@@ -81,6 +85,13 @@ export default function PropertyList() {
 
       <div className="toolbar">
         <div className="filter-bar">
+          <SearchBox
+            value={query}
+            onChange={setQuery}
+            placeholder="Search properties..."
+            suggestions={properties.map((p) => ({ id: p.id, label: p.name, meta: p.id }))}
+            onSelectSuggestion={(m) => navigate(`/properties/${m.id}`)}
+          />
           <Select
             value={statusFilter}
             onChange={setStatusFilter}
@@ -106,10 +117,10 @@ export default function PropertyList() {
         </div>
 
         <div className="view-toggle" role="tablist" aria-label="View mode">
-          <button type="button" className={view === "grid" ? "is-active" : ""} onClick={() => setView("grid")} data-tooltip="Grid view">
+          <button type="button" className={view === "grid" ? "is-active" : ""} onClick={() => { setView("grid"); localStorage.setItem("rateiq_properties_view", "grid"); }} data-tooltip="Grid view">
             <LayoutGrid />
           </button>
-          <button type="button" className={view === "list" ? "is-active" : ""} onClick={() => setView("list")} data-tooltip="List view">
+          <button type="button" className={view === "list" ? "is-active" : ""} onClick={() => { setView("list"); localStorage.setItem("rateiq_properties_view", "list"); }} data-tooltip="List view">
             <List />
           </button>
         </div>
@@ -160,7 +171,7 @@ export default function PropertyList() {
                   <Link to={`/properties/${p.id}`} className="icon-btn btn-sm" data-tooltip="View & Edit" onClick={(e) => e.stopPropagation()}>
                     <Pencil />
                   </Link>
-                  <Link to="/rooms" className="icon-btn btn-sm" data-tooltip="View rooms" onClick={(e) => e.stopPropagation()}>
+                  <Link to={`/rooms?propertyId=${p.id}`} className="icon-btn btn-sm" data-tooltip="View rooms" onClick={(e) => e.stopPropagation()}>
                     <ArrowUpRight />
                   </Link>
                   <button
@@ -205,7 +216,7 @@ export default function PropertyList() {
                   <td>
                     <div className="row-actions">
                       <Link to={`/properties/${p.id}`} className="icon-btn btn-sm" data-tooltip="View & Edit" onClick={(e) => e.stopPropagation()}><Pencil /></Link>
-                      <Link to="/rooms" className="icon-btn btn-sm" data-tooltip="View rooms" onClick={(e) => e.stopPropagation()}><ArrowUpRight /></Link>
+                      <Link to={`/rooms?propertyId=${p.id}`} className="icon-btn btn-sm" data-tooltip="View rooms" onClick={(e) => e.stopPropagation()}><ArrowUpRight /></Link>
                       <button type="button" className="icon-btn btn-sm" data-tooltip="Delete" onClick={(e) => { e.stopPropagation(); setConfirmDelete(p); }}><Trash2 /></button>
                     </div>
                   </td>

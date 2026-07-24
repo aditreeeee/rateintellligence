@@ -2,12 +2,13 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import {
   Building2, BedDouble, Plus, Pencil, Trash2, Copy, Archive, ArchiveRestore, Eye,
-  Search, AlertTriangle, ChevronLeft, ChevronRight,
+  AlertTriangle, ChevronLeft, ChevronRight, LayoutGrid, List, CalendarRange,
 } from "lucide-react";
 import PageHeader from "../../components/ui/PageHeader";
 import EmptyState from "../../components/ui/EmptyState";
 import Modal from "../../components/ui/Modal";
 import Select from "../../components/ui/Select";
+import SearchBox from "../../components/ui/SearchBox";
 import RatePlanWizardModal from "../../components/rateplans/RatePlanWizardModal";
 import { useData } from "../../context/DataContext";
 import { useToast } from "../../context/ToastContext";
@@ -30,6 +31,15 @@ function activeRate(rp) {
   return rates.length ? Math.min(...rates) : 0;
 }
 
+// The pricing period currently in effect, taken from the plan's first meal
+// plan — used for the Grid view's "Current Pricing Period" summary.
+function activePricingWindow(rp) {
+  const period = (rp.mealPlans || []).map((mp) => activePeriodOf(mp.pricingPeriods)).find(Boolean);
+  return period ? `${period.effectiveFrom} → ${period.effectiveTo}` : "—";
+}
+
+const VIEW_STORAGE_KEY = "rateiq_rateplans_view";
+
 export default function RatePlansPage() {
   const { properties, getRatePlansByProperty, getRoomsByProperty, getRoomById, updateRatePlan, deleteRatePlan, duplicateRatePlan } = useData();
   const toast = useToast();
@@ -38,6 +48,7 @@ export default function RatePlansPage() {
 
   const [propertyId, setPropertyId] = useState(searchParams.get("propertyId") || properties[0]?.id);
   const [roomId, setRoomId] = useState(searchParams.get("roomId") || null);
+  const [view, setView] = useState(() => localStorage.getItem(VIEW_STORAGE_KEY) || "list");
   const [query, setQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
   const [sortBy, setSortBy] = useState("name");
@@ -48,6 +59,11 @@ export default function RatePlansPage() {
   const [wizardMode, setWizardMode] = useState("create");
   const [activePlan, setActivePlan] = useState(null);
   const [confirmDelete, setConfirmDelete] = useState(null);
+
+  function changeView(v) {
+    setView(v);
+    localStorage.setItem(VIEW_STORAGE_KEY, v);
+  }
 
   const propertyRooms = useMemo(() => getRoomsByProperty(propertyId), [getRoomsByProperty, propertyId]);
 
@@ -130,13 +146,27 @@ export default function RatePlansPage() {
   }
 
   const activeProperty = properties.find((p) => p.id === propertyId);
+  const activeRoom = roomId ? getRoomById(roomId) : null;
+  // A single checked row reads as "the" selected Rate Plan for breadcrumb
+  // purposes, completing the Property > Room > Rate Plan chain.
+  const activeRatePlan = selectedIds.length === 1 ? allPlans.find((rp) => rp.id === selectedIds[0]) : null;
+
+  // Breadcrumb mirrors the live selection chain, the same chain that drives
+  // the filter panel and the table below it.
+  const selectionCrumbs = [
+    { label: "Dashboard", to: "/" },
+    { label: "Rate Plans", to: activeProperty ? "/rate-plans" : undefined },
+  ];
+  if (activeProperty) selectionCrumbs.push({ label: activeProperty.name, to: activeRoom ? "/rate-plans" : undefined });
+  if (activeRoom) selectionCrumbs.push({ label: activeRoom.name, to: activeRatePlan ? "/rate-plans" : undefined });
+  if (activeRatePlan) selectionCrumbs.push({ label: activeRatePlan.name });
 
   return (
     <>
       <PageHeader
-        crumbs={[{ label: "Dashboard", to: "/" }, { label: "Rate Plans" }]}
+        crumbs={selectionCrumbs}
         title="Rate Plan Management"
-        subtitle="Select a Property, then a Room on the left — its rate plans, occupancy pricing and cancellation policies load automatically."
+        subtitle="Select a Property and Room on the left to manage its rate plans."
         actions={<button className="btn btn-primary" onClick={openCreate} disabled={!roomId}><Plus /> Add Rate Plan</button>}
       />
 
@@ -151,12 +181,7 @@ export default function RatePlansPage() {
               onChange={selectProperty}
               options={properties.map((p) => ({ value: p.id, label: `${p.name} (${getRatePlansByProperty(p.id).length} plans)` }))}
             />
-            {activeProperty && (
-              <div className="filter-option is-active" style={{ cursor: "default", marginTop: "var(--space-3)" }}>
-                <span className="filter-option__avatar">{activeProperty.name.split(" ").map((w) => w[0]).slice(0, 2).join("")}</span>
-                <span><div>{activeProperty.name}</div><div className="filter-option__meta">{activeProperty.id}</div></span>
-              </div>
-            )}
+            {activeProperty && <div className="filter-panel__hint">{activeProperty.id}</div>}
           </div>
           <div className="card filter-panel__section">
             <div className="filter-panel__label"><BedDouble /> Room</div>
@@ -171,12 +196,7 @@ export default function RatePlansPage() {
                   onChange={selectRoom}
                   options={propertyRooms.map((r) => ({ value: r.id, label: `${r.name} (${allPlans.filter((rp) => (rp.roomIds || []).includes(r.id)).length} plans)` }))}
                 />
-                {roomId && (
-                  <div className="filter-option is-active" style={{ cursor: "default", marginTop: "var(--space-3)" }}>
-                    <span className="filter-option__avatar">{getRoomById(roomId)?.name.split(" ").map((w) => w[0]).slice(0, 2).join("")}</span>
-                    <span><div>{getRoomById(roomId)?.name}</div><div className="filter-option__meta">{roomId}</div></span>
-                  </div>
-                )}
+                {roomId && <div className="filter-panel__hint">{roomId}</div>}
               </>
             )}
           </div>
@@ -185,15 +205,13 @@ export default function RatePlansPage() {
         <div>
           <div className="toolbar">
             <div className="filter-bar">
-              <div className="select-pill" style={{ paddingLeft: 10 }}>
-                <Search style={{ width: 14, height: 14 }} />
-                <input
-                  value={query}
-                  onChange={(e) => { setQuery(e.target.value); setPage(1); }}
-                  placeholder="Search rate plans..."
-                  style={{ border: "none", background: "transparent", outline: "none", fontSize: "var(--fs-sm)", width: 140 }}
-                />
-              </div>
+              <SearchBox
+                value={query}
+                onChange={(v) => { setQuery(v); setPage(1); }}
+                placeholder="Search rate plans..."
+                suggestions={allPlans.filter((rp) => !roomId || (rp.roomIds || []).includes(roomId)).map((rp) => ({ id: rp.id, label: rp.name, meta: rp.id }))}
+                onSelectSuggestion={(m) => navigate(`/rate-plans/${m.id}`)}
+              />
               <Select
                 value={statusFilter}
                 onChange={(v) => { setStatusFilter(v); setPage(1); }}
@@ -213,6 +231,14 @@ export default function RatePlansPage() {
                   { value: "rate", label: "Double rate (high–low)" },
                 ]}
               />
+            </div>
+            <div className="view-toggle" role="tablist" aria-label="View mode">
+              <button type="button" className={view === "grid" ? "is-active" : ""} onClick={() => changeView("grid")} data-tooltip="Grid view">
+                <LayoutGrid />
+              </button>
+              <button type="button" className={view === "list" ? "is-active" : ""} onClick={() => changeView("list")} data-tooltip="List view">
+                <List />
+              </button>
             </div>
           </div>
 
@@ -241,6 +267,56 @@ export default function RatePlansPage() {
                 action={<button className="btn btn-primary" onClick={openCreate}><Plus /> Add Rate Plan</button>}
               />
             </div>
+          ) : view === "grid" ? (
+            <section className="card-grid" aria-label="Rate plan list">
+              {pagePlans.map((rp) => {
+                const linkedRooms = (rp.roomIds || []).map((rid) => getRoomById(rid)).filter(Boolean);
+                const roomLabel = getRoomById(roomId)?.name || linkedRooms[0]?.name || "—";
+                return (
+                  <article
+                    className="card card-hover entity-card entity-card--clickable"
+                    key={rp.id}
+                    style={{ cursor: "pointer" }}
+                    onClick={() => navigate(`/rate-plans/${rp.id}`)}
+                  >
+                    <div className="entity-card__top">
+                      <div className="entity-card__avatar">{rp.name.split(" ").map((w) => w[0]).slice(0, 2).join("")}</div>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div className="entity-card__title">{rp.name}</div>
+                        <div className="entity-card__meta">{activeProperty?.name} · {roomLabel}</div>
+                      </div>
+                      <span className={`badge ${rp.status === "Active" ? "badge-success pulse" : rp.status === "Draft" ? "badge-warning" : "badge-neutral"}`}>{rp.status}</span>
+                    </div>
+
+                    <div className="flex gap-2" style={{ flexWrap: "wrap" }}>
+                      {(rp.mealPlans || []).map((mp) => (
+                        <span key={mp.mealPlanCode} className={`rp-mealplan-badge ${mp.mealPlanCode}`}>{mp.mealPlanCode}</span>
+                      ))}
+                    </div>
+
+                    <div className="text-muted" style={{ fontSize: "var(--fs-xs)", display: "flex", alignItems: "center", gap: 6 }}>
+                      <CalendarRange style={{ width: 12, height: 12 }} /> {activePricingWindow(rp)}
+                    </div>
+
+                    <div className="entity-card__stats">
+                      <div><strong>{fmt(activeRate(rp))}</strong>Starting Rate</div>
+                      <div><strong>{(rp.mealPlans || []).length}</strong>Meal Plans</div>
+                      <div><strong>{linkedRooms.length}</strong>Rooms</div>
+                    </div>
+
+                    <div className="entity-card__footer">
+                      <span className="text-muted" style={{ fontSize: "var(--fs-xs)" }}>Updated {rp.modifiedDate}</span>
+                      <div className="entity-card__actions">
+                        <button className="icon-btn btn-sm" data-tooltip="View" onClick={(e) => { e.stopPropagation(); navigate(`/rate-plans/${rp.id}`); }}><Eye /></button>
+                        <button className="icon-btn btn-sm" data-tooltip="Edit" onClick={(e) => { e.stopPropagation(); openEdit(rp); }}><Pencil /></button>
+                        <button className="icon-btn btn-sm" data-tooltip="Duplicate" onClick={(e) => { e.stopPropagation(); handleDuplicate(rp); }}><Copy /></button>
+                        <button className="icon-btn btn-sm" data-tooltip="Delete" onClick={(e) => { e.stopPropagation(); setConfirmDelete(rp); }}><Trash2 /></button>
+                      </div>
+                    </div>
+                  </article>
+                );
+              })}
+            </section>
           ) : (
             <>
               <div className="table-wrap card">
@@ -250,14 +326,14 @@ export default function RatePlansPage() {
                       <th style={{ width: 32 }}>
                         <input type="checkbox" checked={pagePlans.every((r) => selectedIds.includes(r.id))} onChange={toggleSelectAllOnPage} />
                       </th>
-                      <th>Rate Plan</th><th>Room</th><th>Meal Plans</th><th>Current Rate (from, Double)</th><th>Status</th><th></th>
+                      <th>Rate Plan</th><th>Room</th><th>Meal Plans</th><th>Starting Rate</th><th>Status</th><th></th>
                     </tr>
                   </thead>
                   <tbody>
                     {pagePlans.map((rp) => {
                       const linkedRooms = (rp.roomIds || []).map((id) => getRoomById(id)).filter(Boolean);
                       return (
-                      <tr key={rp.id}>
+                      <tr key={rp.id} className={selectedIds.includes(rp.id) ? "is-selected" : ""}>
                         <td><input type="checkbox" checked={selectedIds.includes(rp.id)} onChange={() => toggleSelect(rp.id)} /></td>
                         <td style={{ cursor: "pointer" }} onClick={() => navigate(`/rate-plans/${rp.id}`)}>
                           <div className="cell-strong">{rp.name}</div>

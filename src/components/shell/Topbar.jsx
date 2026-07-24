@@ -1,11 +1,21 @@
 import { useState, useRef, useEffect } from "react";
 import { Search, Menu, Bell, CircleHelp, ChevronDown, User, Shield, Settings, LogOut } from "lucide-react";
 import { useData } from "../../context/DataContext";
+import CommandPalette from "./CommandPalette";
+
+const isMac = typeof navigator !== "undefined" && /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent);
 
 export default function Topbar({ onOpenMobile }) {
   const { company } = useData();
   const [userOpen, setUserOpen] = useState(false);
+  const [paletteOpen, setPaletteOpen] = useState(false);
+  const [paletteQuery, setPaletteQuery] = useState("");
   const ref = useRef(null);
+
+  function openPaletteWithQuery(q) {
+    setPaletteQuery(q);
+    setPaletteOpen(true);
+  }
 
   useEffect(() => {
     function onDocClick(e) {
@@ -15,17 +25,44 @@ export default function Topbar({ onOpenMobile }) {
     return () => document.removeEventListener("click", onDocClick);
   }, []);
 
+  useEffect(() => {
+    function onKeyDown(e) {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        setPaletteOpen(true);
+      }
+    }
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, []);
+
   return (
     <header className="topbar">
       <button className="icon-btn mobile-menu-btn" type="button" aria-label="Open menu" onClick={onOpenMobile}>
         <Menu />
       </button>
 
-      <div className="topbar__search">
+      <label className="topbar__search" htmlFor="global-search-input">
         <Search />
-        <input type="text" placeholder="Search properties, rooms, rate plans..." aria-label="Search" />
-        <kbd>⌘K</kbd>
-      </div>
+        <input
+          id="global-search-input"
+          type="text"
+          value={paletteQuery}
+          placeholder="Search properties, rooms, rate plans..."
+          autoComplete="off"
+          onFocus={() => setPaletteOpen(true)}
+          onChange={(e) => openPaletteWithQuery(e.target.value)}
+          onKeyDown={(e) => { if (e.key === "Escape") e.currentTarget.blur(); }}
+        />
+        <kbd>{isMac ? "⌘K" : "Ctrl+K"}</kbd>
+      </label>
+
+      <CommandPalette
+        open={paletteOpen}
+        query={paletteQuery}
+        onQueryChange={setPaletteQuery}
+        onClose={() => setPaletteOpen(false)}
+      />
 
       <div className="topbar__spacer"></div>
 

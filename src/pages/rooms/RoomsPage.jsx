@@ -1,13 +1,14 @@
 import { useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import {
   Building2, Plus, Pencil, Trash2, Copy, Archive, ArchiveRestore, Eye,
-  Search, AlertTriangle, ChevronLeft, ChevronRight, LayoutGrid, List, Layers,
+  AlertTriangle, ChevronLeft, ChevronRight, LayoutGrid, List, Layers,
 } from "lucide-react";
 import PageHeader from "../../components/ui/PageHeader";
 import EmptyState from "../../components/ui/EmptyState";
 import Modal from "../../components/ui/Modal";
 import Select from "../../components/ui/Select";
+import SearchBox from "../../components/ui/SearchBox";
 import RoomWizardModal from "../../components/rooms/RoomWizardModal";
 import { useData } from "../../context/DataContext";
 import { useToast } from "../../context/ToastContext";
@@ -18,9 +19,10 @@ export default function RoomsPage() {
   const { properties, getRoomsByProperty, getRatePlansByRoom, updateRoom, deleteRoom, duplicateRoom } = useData();
   const toast = useToast();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
-  const [selectedPropertyId, setSelectedPropertyId] = useState(properties[0]?.id);
-  const [view, setView] = useState("list");
+  const [selectedPropertyId, setSelectedPropertyId] = useState(searchParams.get("propertyId") || properties[0]?.id);
+  const [view, setView] = useState(() => localStorage.getItem("rateiq_rooms_view") || "list");
   const [query, setQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
   const [sortBy, setSortBy] = useState("displayOrder");
@@ -131,27 +133,20 @@ export default function RoomsPage() {
               onChange={selectProperty}
               options={properties.map((p) => ({ value: p.id, label: `${p.name} (${getRoomsByProperty(p.id).length} rooms)` }))}
             />
-            {activeProperty && (
-              <div className="filter-option is-active" style={{ cursor: "default", marginTop: "var(--space-3)" }}>
-                <span className="filter-option__avatar">{activeProperty.name.split(" ").map((w) => w[0]).slice(0, 2).join("")}</span>
-                <span><div>{activeProperty.name}</div><div className="filter-option__meta">{activeProperty.id} · {activeProperty.city}</div></span>
-              </div>
-            )}
+            {activeProperty && <div className="filter-panel__hint">{activeProperty.id} · {activeProperty.city}</div>}
           </div>
         </aside>
 
         <div>
           <div className="toolbar">
             <div className="filter-bar">
-              <div className="select-pill" style={{ paddingLeft: 10 }}>
-                <Search style={{ width: 14, height: 14 }} />
-                <input
-                  value={query}
-                  onChange={(e) => { setQuery(e.target.value); setPage(1); }}
-                  placeholder="Search rooms..."
-                  style={{ border: "none", background: "transparent", outline: "none", fontSize: "var(--fs-sm)", width: 140 }}
-                />
-              </div>
+              <SearchBox
+                value={query}
+                onChange={(v) => { setQuery(v); setPage(1); }}
+                placeholder="Search rooms..."
+                suggestions={allRooms.map((r) => ({ id: r.id, label: r.name, meta: r.id }))}
+                onSelectSuggestion={(m) => navigate(`/rooms/${m.id}`)}
+              />
               <Select
                 value={statusFilter}
                 onChange={(v) => { setStatusFilter(v); setPage(1); }}
@@ -172,10 +167,10 @@ export default function RoomsPage() {
               />
             </div>
             <div className="view-toggle" role="tablist" aria-label="View mode">
-              <button type="button" className={view === "grid" ? "is-active" : ""} onClick={() => setView("grid")} data-tooltip="Grid view">
+              <button type="button" className={view === "grid" ? "is-active" : ""} onClick={() => { setView("grid"); localStorage.setItem("rateiq_rooms_view", "grid"); }} data-tooltip="Grid view">
                 <LayoutGrid />
               </button>
-              <button type="button" className={view === "list" ? "is-active" : ""} onClick={() => setView("list")} data-tooltip="List view">
+              <button type="button" className={view === "list" ? "is-active" : ""} onClick={() => { setView("list"); localStorage.setItem("rateiq_rooms_view", "list"); }} data-tooltip="List view">
                 <List />
               </button>
             </div>
@@ -246,7 +241,7 @@ export default function RoomsPage() {
                   </thead>
                   <tbody>
                     {pageRooms.map((r) => (
-                      <tr key={r.id}>
+                      <tr key={r.id} className={selectedIds.includes(r.id) ? "is-selected" : ""}>
                         <td><input type="checkbox" checked={selectedIds.includes(r.id)} onChange={() => toggleSelect(r.id)} /></td>
                         <td style={{ cursor: "pointer" }} onClick={() => navigate(`/rooms/${r.id}`)}>
                           <div className="flex items-center gap-3">

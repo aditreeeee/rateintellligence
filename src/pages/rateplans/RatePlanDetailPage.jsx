@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import {
-  Fingerprint, Building2, Utensils, ShieldCheck, CalendarRange, Pencil, Trash2,
+  Utensils, ShieldCheck, CalendarRange, Pencil, Trash2,
   BedDouble, StickyNote, Send, Plus, IndianRupee,
 } from "lucide-react";
 import PageHeader from "../../components/ui/PageHeader";
@@ -48,6 +48,7 @@ export default function RatePlanDetailPage() {
   const cxlPolicy = masterData.cancellationPolicies.find((c) => c.id === ratePlan.cancellationPolicyId);
   const linkedRooms = (ratePlan.roomIds || []).map((rid) => getRoomById(rid)).filter(Boolean);
   const mealPlans = ratePlan.mealPlans || [];
+  const statusBadgeClass = ratePlan.status === "Active" ? "badge-success" : ratePlan.status === "Draft" ? "badge-warning" : "badge-neutral";
 
   function openEditAt(stepKey) {
     setEditStep(stepKey);
@@ -67,57 +68,27 @@ export default function RatePlanDetailPage() {
     toast({ title: "Pricing period removed", type: "info" });
   }
 
-  const summary = [
-    { label: "Rate Plan ID", value: ratePlan.id, icon: Fingerprint },
-    { label: "Property", value: property?.name || "—", icon: Building2 },
-    { label: "Meal Plans", value: mealPlans.map((m) => m.mealPlanCode).join(", ") || "—", icon: Utensils },
-    { label: "Status", value: ratePlan.status, icon: null },
-    { label: "Rooms", value: linkedRooms.length, icon: BedDouble },
-    { label: "Cancellation", value: cxlPolicy?.name || "—", icon: ShieldCheck },
-  ];
-
   return (
     <>
       <PageHeader
         crumbs={[{ label: "Dashboard", to: "/" }, { label: "Rate Plans", to: "/rate-plans" }, { label: ratePlan.name }]}
-        title={ratePlan.name}
-        subtitle={`${property?.name || ""} · ${ratePlan.id} — a Rate Plan is independent of its Meal Plans, listed below.`}
+        title={<>{ratePlan.name} <span className={`badge ${statusBadgeClass}`} style={{ verticalAlign: "middle", marginLeft: 8 }}>{ratePlan.status}</span></>}
+        subtitle={`${property?.name || ""} · ${ratePlan.id}`}
         actions={<button className="btn btn-primary" onClick={() => openEditAt("overview")}><Pencil /> Edit Rate Plan</button>}
       />
 
-      <section className="card" style={{ marginBottom: "var(--space-6)" }}>
-        <div className="card__header">
-          <div className="card__title">Summary</div>
-          <span className={`badge ${ratePlan.status === "Active" ? "badge-success" : ratePlan.status === "Draft" ? "badge-warning" : "badge-neutral"}`}>{ratePlan.status}</span>
-        </div>
-        <div className="card__body">
-          <div className="summary-grid">
-            {summary.map((s) => (
-              <div className="summary-grid__item" key={s.label}>
-                <div className="summary-grid__label">{s.icon && <s.icon />} {s.label}</div>
-                <div className="summary-grid__value">{s.value}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       <div className="form-stack">
-        <section className="card">
-          <div className="card__header"><div className="card__title">Description</div></div>
-          <div className="card__body">
-            <p style={{ fontSize: "var(--fs-sm)", color: "var(--text-secondary)", lineHeight: "var(--lh-normal)" }}>
-              {ratePlan.description || "No description provided."}
-            </p>
-          </div>
-        </section>
-
         <section className="card">
           <div className="card__header">
             <div className="card__title"><BedDouble style={{ width: 15, height: 15, display: "inline", marginRight: 6 }} />Linked Rooms</div>
             <button className="manage-inline-btn" onClick={() => openEditAt("rooms")}><Pencil /> Manage Rooms</button>
           </div>
-          <div className="card__body">
+          <div className="card__body" style={{ display: "flex", flexDirection: "column", gap: "var(--space-3)" }}>
+            {ratePlan.description && (
+              <p style={{ fontSize: "var(--fs-sm)", color: "var(--text-secondary)", lineHeight: "var(--lh-normal)", margin: 0 }}>
+                {ratePlan.description}
+              </p>
+            )}
             {linkedRooms.length === 0 ? <p className="text-muted" style={{ fontSize: "var(--fs-sm)" }}>No rooms linked yet.</p> : (
               <div className="chip-group">{linkedRooms.map((r) => <span className="chip" key={r.id}>{r.name}</span>)}</div>
             )}
